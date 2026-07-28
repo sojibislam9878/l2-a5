@@ -119,6 +119,58 @@ export type Booking = {
   created_at: string;
 };
 
+export type BookingTechnician = {
+  id: string;
+  user_id: string;
+  bio: string | null;
+  skills: string[];
+  experience_year: number | null;
+  hourly_rate: string | null;
+  user: Pick<User, "id" | "name" | "email" | "phone_no">;
+};
+
+export type BookingService = {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  category: Pick<Category, "id" | "name">;
+};
+
+export type BookingListItem = Booking & {
+  service: BookingService;
+  technician: BookingTechnician;
+  payment: {
+    id: string;
+    status: PaymentStatus;
+    amount: string;
+    paid_at: string | null;
+  } | null;
+  review: { id: string; rating: number }[];
+};
+
+export type BookingDetail = Booking & {
+  user: Pick<User, "id" | "name" | "email" | "phone_no">;
+  service: BookingService;
+  technician: BookingTechnician;
+  payment: {
+    id: string;
+    booking_id: string;
+    transaction_id: string;
+    amount: string;
+    method: string;
+    status: PaymentStatus;
+    paid_at: string | null;
+    created_at: string;
+  } | null;
+  review: {
+    id: string;
+    rating: number;
+    comment: string;
+    created_at: string;
+  }[];
+};
+
 export type ApiSuccess<T> = {
   success: true;
   statusCode: number;

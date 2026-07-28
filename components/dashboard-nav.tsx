@@ -2,10 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserRound } from "lucide-react";
+import { CalendarCheck, UserRound } from "lucide-react";
 import type { Role } from "@/lib/types";
 
-const items = [{ href: "/dashboard/profile", label: "Profile", icon: UserRound }];
+const items: {
+  href: string;
+  label: string;
+  icon: typeof UserRound;
+  roles?: Role[];
+}[] = [
+  { href: "/dashboard/profile", label: "Profile", icon: UserRound },
+  {
+    href: "/dashboard/bookings",
+    label: "My bookings",
+    icon: CalendarCheck,
+    roles: ["customer", "technician"],
+  },
+];
 
 const roleLabels: Record<Role, string> = {
   customer: "Customer account",
@@ -15,6 +28,7 @@ const roleLabels: Record<Role, string> = {
 
 const DashboardNav = ({ role }: { role: Role }) => {
   const pathname = usePathname();
+  const visible = items.filter((item) => !item.roles || item.roles.includes(role));
 
   return (
     <aside className="lg:sticky lg:top-24 lg:h-fit">
@@ -22,8 +36,9 @@ const DashboardNav = ({ role }: { role: Role }) => {
         Account
       </p>
       <nav className="mt-2 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
-        {items.map((item) => {
-          const isActive = pathname === item.href;
+        {visible.map((item) => {
+          const isActive =
+            pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (
             <Link
