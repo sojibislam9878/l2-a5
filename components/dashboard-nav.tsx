@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, ClipboardList, UserRound } from "lucide-react";
+import { CalendarCheck, ClipboardList, UserRound, Wrench } from "lucide-react";
 import type { Role } from "@/lib/types";
 
 const items: {
@@ -22,6 +22,12 @@ const items: {
     href: "/dashboard/jobs",
     label: "Job requests",
     icon: ClipboardList,
+    roles: ["technician"],
+  },
+  {
+    href: "/dashboard/services",
+    label: "My services",
+    icon: Wrench,
     roles: ["technician"],
   },
 ];
