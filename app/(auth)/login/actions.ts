@@ -47,16 +47,17 @@ export const loginAction = async (
       };
     }
 
-    const token = readCookieFromResponse(response, "accessToken");
+    const accessToken = readCookieFromResponse(response, "accessToken");
+    const refreshToken = readCookieFromResponse(response, "refreshToken");
 
-    if (!token) {
+    if (!accessToken) {
       return {
         ok: false,
         message: "Could not start a session. Please try again.",
       };
     }
 
-    await createSession(token);
+    await createSession(accessToken, refreshToken);
 
     return { ok: true, redirectTo: safeRedirect(redirectTo) };
   } catch (error) {
