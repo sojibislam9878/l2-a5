@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ServiceCard from "@/components/service-card";
 import HeroVisual from "@/components/hero-visual";
 import { apiRequest } from "@/lib/api-client";
+import { getCurrentUser } from "@/lib/dal";
 import { visualForCategory } from "@/lib/category-visuals";
 import type { Category, Service, TechnicianSummary } from "@/lib/types";
 
@@ -141,6 +142,7 @@ const CategoryGrid = async () => {
 };
 
 const FeaturedServices = async () => {
+  const user = await getCurrentUser();
   let services: Service[] = [];
 
   try {
@@ -167,7 +169,11 @@ const FeaturedServices = async () => {
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {services.slice(0, 6).map((service) => (
-        <ServiceCard key={service.id} service={service} />
+        <ServiceCard
+          key={service.id}
+          service={service}
+          isAuthenticated={Boolean(user)}
+        />
       ))}
     </div>
   );

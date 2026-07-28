@@ -1,5 +1,3 @@
-import type { ServiceReview } from "./types";
-
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -14,7 +12,7 @@ export const formatPrice = (value: string | number | null | undefined) => {
     : currency.format(amount);
 };
 
-export const averageRating = (reviews: ServiceReview[]) =>
+export const averageRating = (reviews: { rating: number }[]) =>
   reviews.length
     ? reviews.reduce((total, review) => total + review.rating, 0) /
       reviews.length
