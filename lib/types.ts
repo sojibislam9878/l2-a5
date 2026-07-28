@@ -31,6 +31,44 @@ export type User = {
   updatedAt: string;
 };
 
+export type Category = {
+  id: string;
+  name: string;
+  description: string;
+  created_at: string;
+};
+
+export type TechnicianSummary = {
+  id: string;
+  user_id: string;
+  bio: string | null;
+  skills: string[];
+  experience_year: number | null;
+  hourly_rate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: Pick<User, "id" | "name" | "email">;
+};
+
+export type ServiceReview = {
+  rating: number;
+  comment: string;
+  customer_id: string;
+};
+
+export type Service = {
+  id: string;
+  technician_id: string;
+  category_id: string;
+  title: string;
+  description: string;
+  price: string;
+  created_at: string;
+  category: Category;
+  technician: TechnicianSummary;
+  review: ServiceReview[];
+};
+
 export type ApiSuccess<T> = {
   success: true;
   statusCode: number;
