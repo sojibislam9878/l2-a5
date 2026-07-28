@@ -171,6 +171,36 @@ export type BookingDetail = Booking & {
   }[];
 };
 
+export type TechnicianJob = Booking & {
+  user: Pick<User, "id" | "name" | "email" | "phone_no">;
+  service: BookingService;
+  payment: {
+    id: string;
+    status: PaymentStatus;
+    amount: string;
+    paid_at: string | null;
+  } | null;
+  review: { id: string; rating: number }[];
+};
+
+export type TechnicianAction = "accept" | "decline" | "in_progress" | "complete";
+
+export type TechnicianProfileDetail = {
+  id: string;
+  user_id: string;
+  bio: string | null;
+  skills: string[];
+  experience_year: number | null;
+  hourly_rate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  availability: Availability[];
+};
+
+export type CurrentUser = User & {
+  technician_profile?: TechnicianProfileDetail | null;
+};
+
 export type ApiSuccess<T> = {
   success: true;
   statusCode: number;

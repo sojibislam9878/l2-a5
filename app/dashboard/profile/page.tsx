@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { CalendarDays, CircleCheck, CircleSlash, Mail, Phone } from "lucide-react";
+import {
+  CalendarClock,
+  CalendarDays,
+  CircleCheck,
+  CircleSlash,
+  Mail,
+  Phone,
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import ProfileForm from "./profile-form";
+import TechnicianProfileForm from "./technician-profile-form";
+import AvailabilityForm from "./availability-form";
 import { getCurrentUser } from "@/lib/dal";
 import { initialsOf } from "@/lib/format";
 
@@ -151,6 +160,45 @@ const ProfilePage = async () => {
           </p>
         </aside>
       </div>
+
+      {user.role === "technician" && (
+        <>
+          <section className="rounded-2xl border bg-card p-6">
+            <div className="mb-6 space-y-1">
+              <h2 className="font-semibold tracking-tight">Service profile</h2>
+              <p className="text-sm text-muted-foreground">
+                What customers see when they browse your services.
+              </p>
+            </div>
+
+            {user.technician_profile ? (
+              <TechnicianProfileForm profile={user.technician_profile} />
+            ) : (
+              <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
+                Your technician profile could not be loaded. Try refreshing the
+                page.
+              </p>
+            )}
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6">
+            <div className="mb-6 space-y-1">
+              <h2 className="flex items-center gap-2 font-semibold tracking-tight">
+                <CalendarClock className="size-4 text-brand" />
+                Weekly availability
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Customers can only book time inside these hours. Saving replaces
+                your whole weekly schedule.
+              </p>
+            </div>
+
+            <AvailabilityForm
+              availability={user.technician_profile?.availability ?? []}
+            />
+          </section>
+        </>
+      )}
     </div>
   );
 };

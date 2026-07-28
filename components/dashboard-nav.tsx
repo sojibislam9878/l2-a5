@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, UserRound } from "lucide-react";
+import { CalendarCheck, ClipboardList, UserRound } from "lucide-react";
 import type { Role } from "@/lib/types";
 
 const items: {
@@ -17,6 +17,12 @@ const items: {
     label: "My bookings",
     icon: CalendarCheck,
     roles: ["customer", "technician"],
+  },
+  {
+    href: "/dashboard/jobs",
+    label: "Job requests",
+    icon: ClipboardList,
+    roles: ["technician"],
   },
 ];
 
@@ -42,7 +48,7 @@ const DashboardNav = ({ role }: { role: Role }) => {
 
           return (
             <Link
-              key={item.href}
+              key={`${item.href}-${item.label}`}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
