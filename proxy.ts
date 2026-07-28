@@ -46,12 +46,34 @@ const requestWithTokens = (
   return headers;
 };
 
+const PROTECTED_PREFIXES = ["/dashboard"];
+
+const isProtected = (pathname: string) =>
+  PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+
+const toLogin = (request: NextRequest) => {
+  const url = new URL("/login", request.url);
+  url.searchParams.set(
+    "redirect",
+    `${request.nextUrl.pathname}${request.nextUrl.search}`,
+  );
+
+  const response = NextResponse.redirect(url);
+  response.cookies.delete(ACCESS_COOKIE);
+  response.cookies.delete(REFRESH_COOKIE);
+
+  return response;
+};
+
 export const proxy = async (request: NextRequest) => {
   const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
+  const guarded = isProtected(request.nextUrl.pathname);
 
   if (!refreshToken) {
-    return NextResponse.next();
+    return guarded && !accessToken ? toLogin(request) : NextResponse.next();
   }
 
   const needsRefresh =
@@ -79,6 +101,10 @@ export const proxy = async (request: NextRequest) => {
   }
 
   if (!upstream.ok) {
+    if (guarded) {
+      return toLogin(request);
+    }
+
     const response = NextResponse.next();
     response.cookies.delete(ACCESS_COOKIE);
     response.cookies.delete(REFRESH_COOKIE);

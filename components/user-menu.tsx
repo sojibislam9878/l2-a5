@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import Link from "next/link";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -45,10 +46,11 @@ const UserMenu = ({ user }: { user: User }) => {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled className="gap-2">
-          <LayoutDashboard className="size-4" />
-          Dashboard
-          <span className="ml-auto text-xs text-muted-foreground">soon</span>
+        <DropdownMenuItem asChild className="gap-2">
+          <Link href="/dashboard/profile">
+            <LayoutDashboard className="size-4" />
+            Dashboard
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
