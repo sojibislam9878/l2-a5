@@ -33,10 +33,10 @@ const readMessage = (payload: unknown, status: number) => {
   return `Request failed with status ${status}`;
 };
 
-export const apiRequest = async <T>(
+export const apiRequestWithResponse = async <T>(
   path: string,
   options: RequestOptions = {},
-): Promise<T | undefined> => {
+): Promise<{ data: T | undefined; response: Response }> => {
   const { method = "GET", body, token, cache, revalidate, tags } = options;
 
   let response: Response;
@@ -74,5 +74,27 @@ export const apiRequest = async <T>(
     throw new ApiError(response.status, readMessage(payload, response.status));
   }
 
-  return (payload as ApiSuccess<T>)?.data;
+  return { data: (payload as ApiSuccess<T>)?.data, response };
+};
+
+export const apiRequest = async <T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T | undefined> => {
+  const { data } = await apiRequestWithResponse<T>(path, options);
+
+  return data;
+};
+
+export const readCookieFromResponse = (response: Response, name: string) => {
+  for (const cookie of response.headers.getSetCookie()) {
+    const [pair] = cookie.split(";");
+    const separator = pair.indexOf("=");
+
+    if (separator > 0 && pair.slice(0, separator).trim() === name) {
+      return decodeURIComponent(pair.slice(separator + 1).trim());
+    }
+  }
+
+  return undefined;
 };
