@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { PackageOpen, ServerCrash, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ServiceDialog from "./service-dialog";
+import ServiceDeleteButton from "./service-delete-button";
 import { apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
 import { averageRating, formatPrice } from "@/lib/format";
@@ -152,6 +153,11 @@ const ServicesPage = async () => {
                     <ServiceDialog
                       categories={categoryList}
                       service={service}
+                    />
+                    <ServiceDeleteButton
+                      serviceId={service.id}
+                      title={service.title}
+                      bookingCount={service._count.booking}
                     />
                   </div>
                 </div>

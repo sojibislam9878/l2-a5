@@ -74,6 +74,33 @@ export const createServiceAction = async (
   }
 };
 
+export const deleteServiceAction = async (
+  serviceId: string,
+): Promise<ServiceResult> => {
+  const denied = await guard();
+
+  if (denied) {
+    return { ok: false, message: denied };
+  }
+
+  try {
+    await apiRequest(`/api/services/${serviceId}`, {
+      method: "DELETE",
+      token: await getSessionToken(),
+    });
+
+    revalidate(serviceId);
+
+    return { ok: true, serviceId };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return { ok: false, message: error.message };
+    }
+
+    return { ok: false, message: "Could not delete the service. Try again." };
+  }
+};
+
 export const updateServiceAction = async (
   serviceId: string,
   values: unknown,

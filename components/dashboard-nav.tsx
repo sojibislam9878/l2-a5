@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   CalendarClock,
   ClipboardList,
+  FolderTree,
   LayoutDashboard,
   UserRound,
   Users,
@@ -65,6 +66,11 @@ const ADMIN: NavItem[] = [
     href: "/dashboard/admin/bookings",
     label: "All bookings",
     icon: CalendarCheck,
+  },
+  {
+    href: "/dashboard/admin/categories",
+    label: "Categories",
+    icon: FolderTree,
   },
 ];
 

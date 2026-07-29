@@ -3,6 +3,7 @@
 import { ApiError, apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
 import { getSessionToken } from "@/lib/session";
+import type { BookingDetail } from "@/lib/types";
 
 export type PaymentResult =
   | { ok: true; url: string }
@@ -22,6 +23,15 @@ export const startPaymentAction = async (
   }
 
   try {
+    const booking = await apiRequest<BookingDetail>(
+      `/api/bookings/${bookingId}`,
+      { token: await getSessionToken(), cache: "no-store" },
+    );
+
+    if (booking?.technician.user_id === user.id) {
+      return { ok: false, message: "You cannot pay for your own service." };
+    }
+
     const result = await apiRequest<{ url: string | null }>(
       "/api/payments/create",
       {

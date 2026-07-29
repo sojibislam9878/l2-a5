@@ -5,6 +5,7 @@ import { ApiError, apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
 import { getSessionToken } from "@/lib/session";
 import { reviewSchema } from "@/lib/validations/review";
+import type { BookingDetail } from "@/lib/types";
 
 export type ReviewResult = { ok: true } | { ok: false; message: string };
 
@@ -34,6 +35,15 @@ export const createReviewAction = async (
   }
 
   try {
+    const booking = await apiRequest<BookingDetail>(
+      `/api/bookings/${bookingId}`,
+      { token: await getSessionToken(), cache: "no-store" },
+    );
+
+    if (booking?.technician.user_id === user.id) {
+      return { ok: false, message: "You cannot review your own service." };
+    }
+
     await apiRequest("/api/reviews", {
       method: "POST",
       token: await getSessionToken(),

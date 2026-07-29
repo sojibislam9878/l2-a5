@@ -67,6 +67,7 @@ export type Service = {
   category: Category;
   technician: TechnicianSummary & { availability: Availability[] };
   review: ServiceReview[];
+  _count: { booking: number };
 };
 
 export type Availability = {
@@ -389,6 +390,10 @@ export type AdminBookingDetail = Booking & {
     comment: string;
     created_at: string;
   }[];
+};
+
+export type AdminCategory = Category & {
+  _count: { service: number };
 };
 
 export type ApiSuccess<T> = {
