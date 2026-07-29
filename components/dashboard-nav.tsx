@@ -61,6 +61,11 @@ const TECHNICIAN: NavItem[] = [
 
 const ADMIN: NavItem[] = [
   { href: "/dashboard/admin/users", label: "All users", icon: Users },
+  {
+    href: "/dashboard/admin/bookings",
+    label: "All bookings",
+    icon: CalendarCheck,
+  },
 ];
 
 const DashboardNav = ({ role }: { role: Role }) => {

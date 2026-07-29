@@ -168,7 +168,7 @@ const TechnicianDetailPage = async ({
                 className="bg-destructive/10 text-destructive"
               >
                 <CircleSlash className="size-3" />
-                Suspended
+                Banned
               </Badge>
             )}
             <dl className="flex divide-x rounded-xl border bg-muted/40">
@@ -207,8 +207,8 @@ const TechnicianDetailPage = async ({
 
       {isBanned && (
         <p className="mt-6 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
-          This technician&apos;s account is suspended, so their services cannot
-          be booked right now.
+          This technician is banned, so their services cannot be booked right
+          now.
         </p>
       )}
 

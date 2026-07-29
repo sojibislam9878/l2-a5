@@ -12,6 +12,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import UserFilters from "./user-filters";
+import UserStatusButton from "@/components/user-status-button";
 import { apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
 import { getSessionToken } from "@/lib/session";
@@ -110,7 +111,7 @@ const AdminUsersPage = async ({
       value: platformUsers.filter((user) => user.role === "technician").length,
     },
     {
-      label: "Suspended",
+      label: "Banned",
       value: platformUsers.filter((user) => user.status === "ban").length,
     },
   ];
@@ -208,7 +209,7 @@ const AdminUsersPage = async ({
                       ) : (
                         <CircleSlash className="size-3" />
                       )}
-                      {isActive ? "Active" : "Suspended"}
+                      {isActive ? "Active" : "Banned"}
                     </span>
                   </div>
 
@@ -216,11 +217,18 @@ const AdminUsersPage = async ({
                     Joined {dateFormatter.format(new Date(user.createdAt))}
                   </p>
 
-                  <Button asChild variant="outline" size="sm" className="shrink-0">
-                    <Link href={`/dashboard/admin/users/${user.id}`}>
-                      Details
-                    </Link>
-                  </Button>
+                  <div className="flex shrink-0 gap-2">
+                    <UserStatusButton
+                      userId={user.id}
+                      name={user.name}
+                      status={user.status}
+                    />
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/dashboard/admin/users/${user.id}`}>
+                        Details
+                      </Link>
+                    </Button>
+                  </div>
                 </li>
               );
             })}

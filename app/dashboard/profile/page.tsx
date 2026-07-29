@@ -93,7 +93,7 @@ const ProfilePage = async () => {
               ) : (
                 <CircleSlash className="size-3" />
               )}
-              {isActive ? "Active" : "Suspended"}
+              {isActive ? "Active" : "Banned"}
             </Badge>
           </div>
         </div>
@@ -101,8 +101,8 @@ const ProfilePage = async () => {
 
       {!isActive && (
         <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
-          Your account is suspended. You cannot book services or manage jobs
-          until an admin restores access.
+          Your account is banned. You cannot book services or manage jobs until
+          an admin unbans you.
         </div>
       )}
 

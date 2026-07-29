@@ -7,25 +7,25 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const ROLES = [
-  { value: "", label: "All" },
-  { value: "customer", label: "Customers" },
-  { value: "technician", label: "Technicians" },
-];
-
 const STATUSES = [
-  { value: "", label: "Any status" },
-  { value: "unban", label: "Active" },
-  { value: "ban", label: "Banned" },
+  { value: "", label: "All" },
+  { value: "pending", label: "Requested" },
+  { value: "accept", label: "Accepted" },
+  { value: "in_progress", label: "In progress" },
+  { value: "complete", label: "Completed" },
+  { value: "decline", label: "Declined" },
 ];
 
-const BASE = "/dashboard/admin/users";
+const PAYMENTS = [
+  { value: "", label: "Any payment" },
+  { value: "completed", label: "Paid" },
+  { value: "pending", label: "Pending" },
+  { value: "none", label: "Not paid" },
+];
 
-const buildHref = (
-  current: URLSearchParams,
-  key: string,
-  value: string,
-) => {
+const BASE = "/dashboard/admin/bookings";
+
+const buildHref = (current: URLSearchParams, key: string, value: string) => {
   const params = new URLSearchParams(current.toString());
 
   if (value) {
@@ -37,14 +37,14 @@ const buildHref = (
   return params.toString() ? `${BASE}?${params}` : BASE;
 };
 
-const UserFilters = ({
+const BookingFilters = ({
   q,
-  role,
   status,
+  payment,
 }: {
   q: string;
-  role: string;
   status: string;
+  payment: string;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -68,7 +68,7 @@ const UserFilters = ({
     active: string,
     key: string,
   ) => (
-    <div className="flex items-center gap-1.5" role="group" aria-label={label}>
+    <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label={label}>
       {options.map((option) => {
         const isActive = active === option.value;
 
@@ -92,14 +92,14 @@ const UserFilters = ({
   );
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="relative sm:max-w-xs sm:flex-1">
+    <div className="space-y-3">
+      <div className="relative sm:max-w-xs">
         <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={term}
           onChange={(event) => setTerm(event.target.value)}
-          placeholder="Search name or email"
-          aria-label="Search users"
+          placeholder="Search service, customer or technician"
+          aria-label="Search bookings"
           className="pl-9"
           suppressHydrationWarning
         />
@@ -117,13 +117,13 @@ const UserFilters = ({
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        {group("Role", ROLES, role, "role")}
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+        {group("Booking status", STATUSES, status, "status")}
         <span className="hidden h-4 w-px bg-border sm:block" />
-        {group("Status", STATUSES, status, "status")}
+        {group("Payment", PAYMENTS, payment, "payment")}
       </div>
     </div>
   );
 };
 
-export default UserFilters;
+export default BookingFilters;

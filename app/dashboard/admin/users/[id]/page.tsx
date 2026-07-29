@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import BookingStatusBadge from "@/components/booking-status-badge";
+import UserStatusButton from "@/components/user-status-button";
 import { ApiError, apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
 import { getSessionToken } from "@/lib/session";
@@ -155,6 +156,11 @@ const AdminUserDetailPage = async ({
           </div>
 
           <div className="flex flex-wrap items-center gap-2 pb-1">
+            <UserStatusButton
+              userId={user.id}
+              name={user.name}
+              status={user.status}
+            />
             <Badge variant="secondary" className="bg-brand/10 text-brand">
               {isTechnician ? (
                 <Wrench className="size-3" />
@@ -176,11 +182,18 @@ const AdminUserDetailPage = async ({
               ) : (
                 <CircleSlash className="size-3" />
               )}
-              {isActive ? "Active" : "Suspended"}
+              {isActive ? "Active" : "Banned"}
             </Badge>
           </div>
         </div>
       </section>
+
+      {!isActive && (
+        <p className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+          This user is banned. {user.name} cannot book, pay, review or manage
+          jobs until they are unbanned.
+        </p>
+      )}
 
       <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {stats.map((stat) => (
