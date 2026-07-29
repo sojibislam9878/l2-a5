@@ -201,6 +201,63 @@ export type CurrentUser = User & {
   technician_profile?: TechnicianProfileDetail | null;
 };
 
+export type TechnicianServiceItem = {
+  id: string;
+  technician_id: string;
+  category_id: string;
+  title: string;
+  description: string;
+  price: string;
+  created_at: string;
+  category: Pick<Category, "id" | "name">;
+  review: { rating: number }[];
+};
+
+export type TechnicianListItem = {
+  id: string;
+  user_id: string;
+  bio: string | null;
+  skills: string[];
+  experience_year: number | null;
+  hourly_rate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: Pick<User, "id" | "name" | "email" | "phone_no" | "role" | "status">;
+  review: { rating: number }[];
+  service: {
+    id: string;
+    title: string;
+    price: string;
+    category: Pick<Category, "id" | "name">;
+  }[];
+};
+
+export type TechnicianReview = {
+  id: string;
+  booking_id: string;
+  customer_id: string;
+  service_id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  user: Pick<User, "id" | "name" | "email">;
+};
+
+export type TechnicianDetail = {
+  id: string;
+  user_id: string;
+  bio: string | null;
+  skills: string[];
+  experience_year: number | null;
+  hourly_rate: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: Pick<User, "id" | "name" | "email" | "phone_no" | "role" | "status">;
+  review: TechnicianReview[];
+  availability: Availability[];
+  service: TechnicianServiceItem[];
+};
+
 export type ApiSuccess<T> = {
   success: true;
   statusCode: number;
