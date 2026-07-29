@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   CalendarClock,
   Check,
+  Circle,
   CircleCheck,
   CreditCard,
   Hash,
@@ -20,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import BookingStatusBadge from "@/components/booking-status-badge";
+import ReviewDialog from "@/components/review-dialog";
 import { ApiError, apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
 import { getSessionToken } from "@/lib/session";
@@ -112,6 +114,8 @@ const BookingDetailPage = async ({
   const price = formatPrice(booking.service.price);
   const isCancelled = derived === "declined";
   const timelineIndex = STATUS_ORDER.indexOf(derived);
+  const canReview =
+    derived === "completed" && booking.payment?.status === "completed";
 
   return (
     <div className="space-y-8">
@@ -264,6 +268,62 @@ const BookingDetailPage = async ({
               </Link>
             </Button>
           </section>
+
+          {booking.review.length === 0 && derived !== "declined" && (
+            <section className="space-y-4 rounded-2xl border bg-card p-6">
+              <div className="space-y-1">
+                <h2 className="font-semibold tracking-tight">Leave a review</h2>
+                <p className="text-sm text-muted-foreground">
+                  {canReview
+                    ? "The job is done and paid — tell other customers how it went."
+                    : "You can review once the job is marked completed and your payment has gone through."}
+                </p>
+              </div>
+
+              {canReview ? (
+                <ReviewDialog
+                  bookingId={booking.id}
+                  serviceTitle={booking.service.title}
+                  technicianName={booking.technician.user.name}
+                />
+              ) : (
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    {derived === "completed" ? (
+                      <Check className="size-4 text-emerald-500" />
+                    ) : (
+                      <Circle className="size-4 text-muted-foreground/40" />
+                    )}
+                    <span
+                      className={
+                        derived === "completed"
+                          ? "text-foreground"
+                          : "text-muted-foreground"
+                      }
+                    >
+                      Job marked completed
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    {booking.payment?.status === "completed" ? (
+                      <Check className="size-4 text-emerald-500" />
+                    ) : (
+                      <Circle className="size-4 text-muted-foreground/40" />
+                    )}
+                    <span
+                      className={
+                        booking.payment?.status === "completed"
+                          ? "text-foreground"
+                          : "text-muted-foreground"
+                      }
+                    >
+                      Payment completed
+                    </span>
+                  </li>
+                </ul>
+              )}
+            </section>
+          )}
 
           {booking.review.length > 0 && (
             <section className="space-y-4 rounded-2xl border bg-card p-6">

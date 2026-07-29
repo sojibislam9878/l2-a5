@@ -6,10 +6,12 @@ import {
   CreditCard,
   MapPin,
   ServerCrash,
+  Star,
   UserRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BookingStatusBadge from "@/components/booking-status-badge";
+import ReviewDialog from "@/components/review-dialog";
 import { apiRequest } from "@/lib/api-client";
 import { getSessionToken } from "@/lib/session";
 import { deriveBookingStatus } from "@/lib/booking-status";
@@ -166,7 +168,23 @@ const CustomerBookings = async () => {
                       </span>
                     )}
 
-                    <div className="flex gap-2">
+                    {booking.review.length > 0 && (
+                      <span className="flex items-center gap-1 text-sm font-medium text-brand">
+                        <Star className="size-3.5 fill-brand text-brand" />
+                        {booking.review[0].rating}/5
+                      </span>
+                    )}
+
+                    <div className="flex flex-wrap justify-end gap-2">
+                      {derived === "completed" &&
+                        booking.payment?.status === "completed" &&
+                        booking.review.length === 0 && (
+                          <ReviewDialog
+                            bookingId={booking.id}
+                            serviceTitle={booking.service.title}
+                            technicianName={booking.technician.user.name}
+                          />
+                        )}
                       {derived === "accepted" && (
                         <Button
                           asChild
