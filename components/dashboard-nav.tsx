@@ -8,6 +8,7 @@ import {
   ClipboardList,
   LayoutDashboard,
   UserRound,
+  Users,
   Wallet,
   Wrench,
   type LucideIcon,
@@ -59,12 +60,7 @@ const TECHNICIAN: NavItem[] = [
 ];
 
 const ADMIN: NavItem[] = [
-  {
-    href: "/dashboard/admin",
-    label: "Overview",
-    icon: LayoutDashboard,
-    exact: true,
-  },
+  { href: "/dashboard/admin/users", label: "All users", icon: Users },
 ];
 
 const DashboardNav = ({ role }: { role: Role }) => {

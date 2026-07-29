@@ -285,6 +285,46 @@ export type PaymentListItem = {
   };
 };
 
+export type AdminUserDetail = User & {
+  technician_profile: {
+    id: string;
+    bio: string | null;
+    skills: string[];
+    experience_year: number | null;
+    hourly_rate: string | null;
+    createdAt: string;
+    availability: Availability[];
+    service: {
+      id: string;
+      title: string;
+      price: string;
+      category: Pick<Category, "id" | "name">;
+    }[];
+    review: { rating: number }[];
+    booking: { id: string; status: BookingStatus }[];
+  } | null;
+  booking: {
+    id: string;
+    scheduled_at: string;
+    status: BookingStatus;
+    address: string;
+    created_at: string;
+    service: {
+      id: string;
+      title: string;
+      price: string;
+      category: Pick<Category, "id" | "name">;
+    };
+    technician: { id: string; user: Pick<User, "id" | "name"> };
+    payment: {
+      status: PaymentStatus;
+      amount: string;
+      paid_at: string | null;
+    } | null;
+  }[];
+  review: { id: string; rating: number }[];
+};
+
 export type ApiSuccess<T> = {
   success: true;
   statusCode: number;
