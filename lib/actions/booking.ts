@@ -86,3 +86,33 @@ export const createBookingAction = async (
     return { ok: false, message: "Could not create the booking. Try again." };
   }
 };
+
+export type CancelBookingResult = { ok: true } | { ok: false; message: string };
+
+export const cancelBookingAction = async (
+  bookingId: string,
+): Promise<CancelBookingResult> => {
+  const token = await getSessionToken();
+
+  if (!token) {
+    return { ok: false, message: "Your session expired. Please sign in again." };
+  }
+
+  try {
+    await apiRequest<Booking>(`/api/bookings/${bookingId}/cancel`, {
+      method: "PATCH",
+      token,
+    });
+
+    revalidatePath("/dashboard/customer/bookings");
+    revalidatePath(`/dashboard/customer/bookings/${bookingId}`);
+
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return { ok: false, message: error.message };
+    }
+
+    return { ok: false, message: "Could not cancel the booking. Try again." };
+  }
+};

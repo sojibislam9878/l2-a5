@@ -229,11 +229,15 @@ const JobsPage = async () => {
                   </div>
                 </div>
 
-                {(awaitingPayment || job.status === "pending") && (
+                {(awaitingPayment ||
+                  job.status === "pending" ||
+                  job.status === "cancel") && (
                   <p className="mt-4 rounded-lg bg-muted/60 px-3 py-2 text-xs text-muted-foreground">
                     {job.status === "pending"
                       ? "The customer is waiting for you to accept or decline this request."
-                      : "Accepted — waiting for the customer to pay before the job starts."}
+                      : job.status === "cancel"
+                        ? "The customer withdrew this request before you accepted it. No action is needed."
+                        : "Accepted — waiting for the customer to pay before the job starts."}
                   </p>
                 )}
 

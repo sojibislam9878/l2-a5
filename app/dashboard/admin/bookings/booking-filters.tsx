@@ -14,6 +14,7 @@ const STATUSES = [
   { value: "in_progress", label: "In progress" },
   { value: "complete", label: "Completed" },
   { value: "decline", label: "Declined" },
+  { value: "cancel", label: "Cancelled" },
 ];
 
 const PAYMENTS = [

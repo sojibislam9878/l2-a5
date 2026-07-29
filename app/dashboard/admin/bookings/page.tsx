@@ -61,6 +61,7 @@ const AdminBookingsPage = async ({
     "in_progress",
     "complete",
     "decline",
+    "cancel",
   ].includes(first(params.status))
     ? first(params.status)
     : "";

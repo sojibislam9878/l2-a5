@@ -11,20 +11,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ProfileForm from "@/components/profile-form";
-import { initialsOf } from "@/lib/format";
-import type { CurrentUser, Role } from "@/lib/types";
+import { ROLE_LABELS, initialsOf } from "@/lib/format";
+import type { CurrentUser } from "@/lib/types";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   month: "long",
   day: "numeric",
   year: "numeric",
 });
-
-const roleLabels: Record<Role, string> = {
-  customer: "Customer",
-  technician: "Technician",
-  admin: "Admin",
-};
 
 const DashboardProfile = ({ user }: { user: CurrentUser }) => {
   const isActive = user.status === "unban";
@@ -65,7 +59,7 @@ const DashboardProfile = ({ user }: { user: CurrentUser }) => {
           </div>
           <div className="flex flex-wrap items-center gap-2 pb-1">
             <Badge variant="secondary" className="bg-brand/10 text-brand">
-              {roleLabels[user.role]}
+              {ROLE_LABELS[user.role]}
             </Badge>
             <Badge
               variant="secondary"

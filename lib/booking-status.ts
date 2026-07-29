@@ -5,6 +5,7 @@ export type DerivedStatus =
   | "accepted"
   | "paid"
   | "declined"
+  | "cancelled"
   | "in_progress"
   | "completed";
 
@@ -14,11 +15,15 @@ export const deriveBookingStatus = (
 ): DerivedStatus => {
   if (status === "pending") return "requested";
   if (status === "decline") return "declined";
+  if (status === "cancel") return "cancelled";
   if (status === "in_progress") return "in_progress";
   if (status === "complete") return "completed";
 
   return paymentStatus === "completed" ? "paid" : "accepted";
 };
+
+// A customer may withdraw their request only while the technician has not acted on it.
+export const isCancellable = (status: BookingStatus) => status === "pending";
 
 export const STATUS_META: Record<
   DerivedStatus,
@@ -43,6 +48,11 @@ export const STATUS_META: Record<
     label: "Declined",
     tone: "bg-destructive/12 text-destructive",
     description: "The technician could not take this job.",
+  },
+  cancelled: {
+    label: "Cancelled",
+    tone: "bg-muted text-muted-foreground",
+    description: "You cancelled this request before it was accepted.",
   },
   in_progress: {
     label: "In progress",

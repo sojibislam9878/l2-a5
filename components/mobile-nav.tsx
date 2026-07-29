@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
-type NavLink = { href: string; label: string };
+import { isActivePath, type NavLink } from "@/lib/nav-links";
 
 const MobileNav = ({
   links,
@@ -22,6 +22,7 @@ const MobileNav = ({
   isAuthenticated: boolean;
 }) => {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -45,16 +46,25 @@ const MobileNav = ({
           </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-1 px-3 py-4">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const active = isActivePath(pathname, link.href);
+
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                aria-current={active ? "page" : undefined}
+                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-brand/10 text-brand"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
         {!isAuthenticated && (
           <div className="mt-auto flex flex-col gap-2 border-t px-5 py-4">

@@ -7,7 +7,8 @@ export type BookingStatus =
   | "accept"
   | "decline"
   | "in_progress"
-  | "complete";
+  | "complete"
+  | "cancel";
 
 export type PaymentStatus = "pending" | "completed" | "failed";
 

@@ -11,10 +11,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BookingStatusBadge from "@/components/booking-status-badge";
+import CancelBookingButton from "@/components/cancel-booking-button";
 import ReviewDialog from "@/components/review-dialog";
 import { apiRequest } from "@/lib/api-client";
 import { getSessionToken } from "@/lib/session";
-import { deriveBookingStatus } from "@/lib/booking-status";
+import { deriveBookingStatus, isCancellable } from "@/lib/booking-status";
 import { formatPrice } from "@/lib/format";
 import { visualForCategory } from "@/lib/category-visuals";
 import type { BookingListItem } from "@/lib/types";
@@ -198,6 +199,12 @@ const CustomerBookings = async () => {
                             Pay now
                           </Link>
                         </Button>
+                      )}
+                      {isCancellable(booking.status) && (
+                        <CancelBookingButton
+                          bookingId={booking.id}
+                          serviceTitle={booking.service.title}
+                        />
                       )}
                       <Button asChild variant="outline" size="sm">
                         <Link href={`/dashboard/customer/bookings/${booking.id}`}>

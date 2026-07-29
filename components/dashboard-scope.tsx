@@ -29,7 +29,7 @@ const DashboardScope = () => {
     <div
       role="radiogroup"
       aria-label="Dashboard view"
-      className="grid gap-1.5 rounded-xl border bg-muted/40 p-1.5 sm:grid-cols-3"
+      className="grid gap-1 rounded-xl border bg-muted/40 p-1.5"
     >
       {options.map((option) => {
         const isActive = option.href === active;
@@ -40,7 +40,7 @@ const DashboardScope = () => {
             href={option.href}
             role="radio"
             aria-checked={isActive}
-            className={`flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+            className={`flex cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
               isActive
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"

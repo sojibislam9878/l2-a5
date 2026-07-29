@@ -62,6 +62,11 @@ const TECHNICIAN: NavItem[] = [
 ];
 
 const ADMIN: NavItem[] = [
+  {
+    href: "/dashboard/admin/overview",
+    label: "Overview",
+    icon: LayoutDashboard,
+  },
   { href: "/dashboard/admin/users", label: "All users", icon: Users },
   {
     href: "/dashboard/admin/bookings",
@@ -105,13 +110,13 @@ const DashboardNav = ({ role }: { role: Role }) => {
       : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
   return (
-    <aside className="space-y-5 lg:sticky lg:top-24 lg:h-fit">
+    <div className="space-y-4">
       {sections.map((section) => (
         <div key={section.label}>
-          <p className="px-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+          <p className="px-2 text-[0.7rem] font-semibold tracking-wider text-muted-foreground/80 uppercase">
             {section.label}
           </p>
-          <nav className="mt-2 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+          <nav className="mt-2 flex gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
             {section.items.map((item) => {
               const active = isActive(item);
 
@@ -120,13 +125,21 @@ const DashboardNav = ({ role }: { role: Role }) => {
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`group flex shrink-0 items-center gap-2.5 rounded-xl py-1.5 pr-3 pl-1.5 text-sm font-medium transition-colors ${
                     active
                       ? "bg-brand/10 text-brand"
                       : "text-muted-foreground hover:bg-accent hover:text-foreground"
                   }`}
                 >
-                  <item.icon className="size-4" />
+                  <span
+                    className={`flex size-7 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                      active
+                        ? "bg-brand text-brand-foreground shadow-sm shadow-brand/25"
+                        : "bg-muted text-muted-foreground group-hover:text-foreground"
+                    }`}
+                  >
+                    <item.icon className="size-3.5" />
+                  </span>
                   {item.label}
                 </Link>
               );
@@ -134,7 +147,7 @@ const DashboardNav = ({ role }: { role: Role }) => {
           </nav>
         </div>
       ))}
-    </aside>
+    </div>
   );
 };
 

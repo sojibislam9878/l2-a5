@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import BookingStatusBadge from "@/components/booking-status-badge";
+import CancelBookingButton from "@/components/cancel-booking-button";
 import ReviewDialog from "@/components/review-dialog";
 import { ApiError, apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
@@ -29,6 +30,7 @@ import {
   STATUS_META,
   STATUS_ORDER,
   deriveBookingStatus,
+  isCancellable,
 } from "@/lib/booking-status";
 import { formatPrice, initialsOf } from "@/lib/format";
 import { visualForCategory } from "@/lib/category-visuals";
@@ -112,7 +114,7 @@ const BookingDetailPage = async ({
   const meta = STATUS_META[derived];
   const { icon: Icon, tint } = visualForCategory(booking.service.category.name);
   const price = formatPrice(booking.service.price);
-  const isCancelled = derived === "declined";
+  const isDeadEnd = derived === "declined" || derived === "cancelled";
   const timelineIndex = STATUS_ORDER.indexOf(derived);
   const canReview =
     derived === "completed" && booking.payment?.status === "completed";
@@ -156,7 +158,7 @@ const BookingDetailPage = async ({
         </div>
       </header>
 
-      {!isCancelled && (
+      {!isDeadEnd && (
         <section className="rounded-2xl border bg-card p-6">
           <h2 className="mb-5 font-semibold tracking-tight">Progress</h2>
           <ol className="grid gap-4 sm:grid-cols-5">
@@ -269,7 +271,7 @@ const BookingDetailPage = async ({
             </Button>
           </section>
 
-          {booking.review.length === 0 && derived !== "declined" && (
+          {booking.review.length === 0 && !isDeadEnd && (
             <section className="space-y-4 rounded-2xl border bg-card p-6">
               <div className="space-y-1">
                 <h2 className="font-semibold tracking-tight">Leave a review</h2>
@@ -383,6 +385,20 @@ const BookingDetailPage = async ({
             </p>
           )}
 
+          {isCancellable(booking.status) && (
+            <div className="space-y-2">
+              <CancelBookingButton
+                bookingId={booking.id}
+                serviceTitle={booking.service.title}
+                size="default"
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground">
+                You can cancel free of charge until the technician accepts.
+              </p>
+            </div>
+          )}
+
           <Separator />
 
           <div className="space-y-4">
@@ -428,9 +444,11 @@ const BookingDetailPage = async ({
               </dl>
             ) : (
               <p className="text-sm text-muted-foreground">
-                {derived === "requested"
-                  ? "Payment opens once the technician accepts your request."
-                  : "No payment has been started for this booking yet."}
+                {derived === "cancelled"
+                  ? "You cancelled this booking, so nothing was charged."
+                  : derived === "requested"
+                    ? "Payment opens once the technician accepts your request."
+                    : "No payment has been started for this booking yet."}
               </p>
             )}
           </div>

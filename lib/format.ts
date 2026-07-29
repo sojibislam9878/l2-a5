@@ -1,3 +1,11 @@
+import type { Role } from "./types";
+
+export const ROLE_LABELS: Record<Role, string> = {
+  customer: "Customer",
+  technician: "Technician",
+  admin: "Admin",
+};
+
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
