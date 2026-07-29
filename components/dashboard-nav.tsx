@@ -2,76 +2,121 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, ClipboardList, UserRound, Wrench } from "lucide-react";
+import {
+  CalendarCheck,
+  CalendarClock,
+  ClipboardList,
+  LayoutDashboard,
+  UserRound,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
 import type { Role } from "@/lib/types";
 
-const items: {
-  href: string;
-  label: string;
-  icon: typeof UserRound;
-  roles?: Role[];
-}[] = [
+type NavItem = { href: string; label: string; icon: LucideIcon; exact?: boolean };
+
+const ACCOUNT: NavItem[] = [
   { href: "/dashboard/profile", label: "Profile", icon: UserRound },
+];
+
+const CUSTOMER: NavItem[] = [
   {
-    href: "/dashboard/bookings",
+    href: "/dashboard/customer/bookings",
     label: "My bookings",
     icon: CalendarCheck,
-    roles: ["customer", "technician"],
-  },
-  {
-    href: "/dashboard/jobs",
-    label: "Job requests",
-    icon: ClipboardList,
-    roles: ["technician"],
-  },
-  {
-    href: "/dashboard/services",
-    label: "My services",
-    icon: Wrench,
-    roles: ["technician"],
   },
 ];
 
-const roleLabels: Record<Role, string> = {
-  customer: "Customer account",
-  technician: "Technician account",
-  admin: "Admin account",
-};
+const TECHNICIAN: NavItem[] = [
+  {
+    href: "/dashboard/technician",
+    label: "Overview",
+    icon: LayoutDashboard,
+    exact: true,
+  },
+  {
+    href: "/dashboard/technician/bookings",
+    label: "Job requests",
+    icon: ClipboardList,
+  },
+  { href: "/dashboard/technician/services", label: "My services", icon: Wrench },
+  {
+    href: "/dashboard/technician/profile",
+    label: "Service profile",
+    icon: UserRound,
+  },
+  {
+    href: "/dashboard/technician/availability",
+    label: "Availability",
+    icon: CalendarClock,
+  },
+];
+
+const ADMIN: NavItem[] = [
+  {
+    href: "/dashboard/admin",
+    label: "Overview",
+    icon: LayoutDashboard,
+    exact: true,
+  },
+];
 
 const DashboardNav = ({ role }: { role: Role }) => {
   const pathname = usePathname();
-  const visible = items.filter((item) => !item.roles || item.roles.includes(role));
+
+  const both = [
+    { label: "Customer", items: CUSTOMER },
+    { label: "Technician", items: TECHNICIAN },
+  ];
+
+  const contextSections =
+    role === "admin"
+      ? [{ label: "Admin", items: ADMIN }]
+      : role !== "technician"
+        ? [{ label: "Customer", items: CUSTOMER }]
+        : pathname.startsWith("/dashboard/customer")
+          ? [{ label: "Customer", items: CUSTOMER }]
+          : pathname.startsWith("/dashboard/technician")
+            ? [{ label: "Technician", items: TECHNICIAN }]
+            : both;
+
+  const sections = [{ label: "Account", items: ACCOUNT }, ...contextSections];
+
+  const isActive = (item: NavItem) =>
+    item.exact
+      ? pathname === item.href
+      : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
   return (
-    <aside className="lg:sticky lg:top-24 lg:h-fit">
-      <p className="px-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-        Account
-      </p>
-      <nav className="mt-2 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
-        {visible.map((item) => {
-          const isActive =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+    <aside className="space-y-5 lg:sticky lg:top-24 lg:h-fit">
+      {sections.map((section) => (
+        <div key={section.label}>
+          <p className="px-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            {section.label}
+          </p>
+          <nav className="mt-2 flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+            {section.items.map((item) => {
+              const active = isActive(item);
 
-          return (
-            <Link
-              key={`${item.href}-${item.label}`}
-              href={item.href}
-              aria-current={isActive ? "page" : undefined}
-              className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-brand/10 text-brand"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
-              }`}
-            >
-              <item.icon className="size-4" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-      <p className="mt-4 hidden px-3 text-xs text-muted-foreground lg:block">
-        {roleLabels[role]}
-      </p>
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    active
+                      ? "bg-brand/10 text-brand"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                  }`}
+                >
+                  <item.icon className="size-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      ))}
     </aside>
   );
 };

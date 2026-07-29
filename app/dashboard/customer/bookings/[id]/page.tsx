@@ -79,7 +79,7 @@ const BookingDetailPage = async ({
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect(`/login?redirect=/dashboard/bookings/${id}`);
+    redirect(`/login?redirect=/dashboard/customer/bookings/${id}`);
   }
 
   const token = await getSessionToken();
@@ -121,7 +121,7 @@ const BookingDetailPage = async ({
           size="sm"
           className="-ml-2 text-muted-foreground"
         >
-          <Link href="/dashboard/bookings">
+          <Link href="/dashboard/customer/bookings">
             <ArrowLeft />
             Back to my bookings
           </Link>

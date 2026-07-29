@@ -37,11 +37,11 @@ const JobsPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/jobs");
+    redirect("/login?redirect=/dashboard/technician/bookings");
   }
 
   if (user.role !== "technician") {
-    redirect("/dashboard/bookings");
+    redirect(`/dashboard/${user.role}`);
   }
 
   let jobs: TechnicianJob[];

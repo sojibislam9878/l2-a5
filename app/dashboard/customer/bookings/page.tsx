@@ -8,18 +8,18 @@ export const metadata: Metadata = {
   description: "Track the services you have booked on FixItNow.",
 };
 
-const BookingsPage = async () => {
+const CustomerBookingsPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/bookings");
+    redirect("/login?redirect=/dashboard/customer/bookings");
   }
 
-  if (user.role === "admin") {
-    redirect("/dashboard/profile");
+  if (user.role !== "customer" && user.role !== "technician") {
+    redirect(`/dashboard/${user.role}`);
   }
 
   return <CustomerBookings />;
 };
 
-export default BookingsPage;
+export default CustomerBookingsPage;

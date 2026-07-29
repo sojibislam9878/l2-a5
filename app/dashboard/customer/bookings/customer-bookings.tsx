@@ -157,7 +157,7 @@ const CustomerBookings = async () => {
                       </span>
                     )}
                     <Button asChild variant="outline" size="sm">
-                      <Link href={`/dashboard/bookings/${booking.id}`}>
+                      <Link href={`/dashboard/customer/bookings/${booking.id}`}>
                         View details
                       </Link>
                     </Button>

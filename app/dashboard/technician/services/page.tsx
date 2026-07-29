@@ -19,11 +19,11 @@ const ServicesPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/services");
+    redirect("/login?redirect=/dashboard/technician/services");
   }
 
   if (user.role !== "technician") {
-    redirect("/dashboard/profile");
+    redirect(`/dashboard/${user.role}`);
   }
 
   const profileId = user.technician_profile?.id;

@@ -12,7 +12,7 @@ export type ServiceResult =
   | { ok: false; message: string };
 
 const revalidate = (serviceId?: string) => {
-  revalidatePath("/dashboard/services");
+  revalidatePath("/dashboard/technician/services");
   revalidatePath("/services");
   revalidatePath("/");
 

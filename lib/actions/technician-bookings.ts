@@ -40,7 +40,7 @@ export const updateJobStatusAction = async (
       body: { status },
     });
 
-    revalidatePath("/dashboard/jobs");
+    revalidatePath("/dashboard/technician/bookings");
 
     return { ok: true };
   } catch (error) {
