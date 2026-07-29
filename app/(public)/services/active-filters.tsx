@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRefetchTransition } from "@/components/refetch-boundary";
 import { X } from "lucide-react";
 import type { ServiceQuery } from "@/lib/services-query";
 import type { Category, TechnicianSummary } from "@/lib/types";
@@ -15,15 +16,18 @@ const ActiveFilters = ({
   technicians: TechnicianSummary[];
 }) => {
   const router = useRouter();
+  const withSkeleton = useRefetchTransition();
   const searchParams = useSearchParams();
 
   const remove = (keys: string[]) => {
     const params = new URLSearchParams(searchParams.toString());
     keys.forEach((key) => params.delete(key));
 
-    router.replace(params.toString() ? `/services?${params}` : "/services", {
-      scroll: false,
-    });
+    withSkeleton(() =>
+      router.replace(params.toString() ? `/services?${params}` : "/services", {
+        scroll: false,
+      }),
+    );
   };
 
   const chips: { label: string; keys: string[] }[] = [];

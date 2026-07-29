@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/link";
 import { CircleSlash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

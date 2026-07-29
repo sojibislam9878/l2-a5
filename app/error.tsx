@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
+import Link from "@/components/link";
 import { CircleAlert, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusPage from "@/components/status-page";

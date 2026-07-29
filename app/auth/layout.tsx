@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/link";
 import { CalendarClock, ShieldCheck, Star, Wrench } from "lucide-react";
 
 const highlights = [

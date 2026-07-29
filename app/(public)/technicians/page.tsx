@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/link";
 import { SearchX, ServerCrash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import TechnicianCard from "@/components/technician-card";
+import RefetchBoundary from "@/components/refetch-boundary";
 import TechnicianFilters from "./technician-filters";
 import FiltersSheet from "./filters-sheet";
 import { apiRequest } from "@/lib/api-client";
@@ -136,8 +137,8 @@ const TechniciansPage = async ({
           Browse technicians
         </h1>
         <p className="max-w-xl text-sm text-muted-foreground sm:text-base">
-          Compare skills, experience and hourly rates, then book directly from
-          a technician&apos;s services.
+          Compare skills, experience and hourly rates, then book directly from a
+          technician&apos;s services.
         </p>
       </header>
 
@@ -157,12 +158,14 @@ const TechniciansPage = async ({
         </aside>
 
         <section className="min-w-0">
-          <Suspense
-            key={toTechnicianSearchString(query)}
-            fallback={<ResultsSkeleton />}
-          >
-            <Results query={query} />
-          </Suspense>
+          <RefetchBoundary fallback={<ResultsSkeleton />}>
+            <Suspense
+              key={toTechnicianSearchString(query)}
+              fallback={<ResultsSkeleton />}
+            >
+              <Results query={query} />
+            </Suspense>
+          </RefetchBoundary>
         </section>
       </div>
     </div>

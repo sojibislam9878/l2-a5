@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import FilterLink from "@/components/filter-link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRefetchTransition } from "@/components/refetch-boundary";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,11 +22,7 @@ const STATUSES = [
 
 const BASE = "/dashboard/admin/users";
 
-const buildHref = (
-  current: URLSearchParams,
-  key: string,
-  value: string,
-) => {
+const buildHref = (current: URLSearchParams, key: string, value: string) => {
   const params = new URLSearchParams(current.toString());
 
   if (value) {
@@ -47,6 +44,7 @@ const UserFilters = ({
   status: string;
 }) => {
   const router = useRouter();
+  const withSkeleton = useRefetchTransition();
   const searchParams = useSearchParams();
   const [term, setTerm] = useState(q);
 
@@ -56,11 +54,13 @@ const UserFilters = ({
         return;
       }
 
-      router.replace(buildHref(searchParams, "q", term), { scroll: false });
+      withSkeleton(() =>
+        router.replace(buildHref(searchParams, "q", term), { scroll: false }),
+      );
     }, 350);
 
     return () => clearTimeout(handle);
-  }, [term, searchParams, router]);
+  }, [term, searchParams, router, withSkeleton]);
 
   const group = (
     label: string,
@@ -73,7 +73,7 @@ const UserFilters = ({
         const isActive = active === option.value;
 
         return (
-          <Link
+          <FilterLink
             key={option.value || "all"}
             href={buildHref(searchParams, key, option.value)}
             scroll={false}
@@ -85,7 +85,7 @@ const UserFilters = ({
             }`}
           >
             {option.label}
-          </Link>
+          </FilterLink>
         );
       })}
     </div>

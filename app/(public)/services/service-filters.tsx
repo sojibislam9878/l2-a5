@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRefetchTransition } from "@/components/refetch-boundary";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,7 @@ const ServiceFilters = ({
   onNavigate,
 }: Props) => {
   const router = useRouter();
+  const withSkeleton = useRefetchTransition();
   const searchParams = useSearchParams();
 
   const [searchTerm, setSearchTerm] = useState(query.searchTerm);
@@ -54,9 +56,11 @@ const ServiceFilters = ({
       }
     }
 
-    router.replace(params.toString() ? `/services?${params}` : "/services", {
-      scroll: false,
-    });
+    withSkeleton(() =>
+      router.replace(params.toString() ? `/services?${params}` : "/services", {
+        scroll: false,
+      }),
+    );
   };
 
   useEffect(() => {
@@ -84,19 +88,24 @@ const ServiceFilters = ({
         }
       }
 
-      router.replace(params.toString() ? `/services?${params}` : "/services", {
-        scroll: false,
-      });
+      withSkeleton(() =>
+        router.replace(
+          params.toString() ? `/services?${params}` : "/services",
+          {
+            scroll: false,
+          },
+        ),
+      );
     }, 400);
 
     return () => clearTimeout(handle);
-  }, [searchTerm, minPrice, maxPrice, searchParams, router]);
+  }, [searchTerm, minPrice, maxPrice, searchParams, router, withSkeleton]);
 
   const clearAll = () => {
     setSearchTerm("");
     setMinPrice("");
     setMaxPrice("");
-    router.replace("/services", { scroll: false });
+    withSkeleton(() => router.replace("/services", { scroll: false }));
     onNavigate?.();
   };
 
@@ -104,10 +113,10 @@ const ServiceFilters = ({
   const hasFilters =
     Boolean(
       searchTerm ||
-        minPrice ||
-        maxPrice ||
-        query.category_id ||
-        query.technician_id,
+      minPrice ||
+      maxPrice ||
+      query.category_id ||
+      query.technician_id,
     ) || sortValue !== DEFAULT_SORT;
 
   return (

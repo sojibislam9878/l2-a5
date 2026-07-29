@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/link";
 import { CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BookingDialog from "@/components/booking-dialog";

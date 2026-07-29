@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/link";
 import { redirect } from "next/navigation";
 import {
   CalendarClock,
@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import BookingStatusBadge from "@/components/booking-status-badge";
 import PaymentStatusChip from "@/components/payment-status-chip";
 import BookingFilters from "./booking-filters";
+import RefetchBoundary from "@/components/refetch-boundary";
+import RowListSkeleton from "@/components/row-list-skeleton";
 import { apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
 import { getSessionToken } from "@/lib/session";
@@ -177,121 +179,130 @@ const AdminBookingsPage = async ({
         payment={paymentFilter}
       />
 
-      {bookings.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-16 text-center">
-          <CalendarX className="size-8 text-muted-foreground" />
-          <p className="font-medium">No bookings yet</p>
-          <p className="max-w-sm text-sm text-muted-foreground">
-            Bookings will appear here as customers book technicians.
-          </p>
-        </div>
-      ) : visible.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-16 text-center">
-          <SearchX className="size-8 text-muted-foreground" />
-          <p className="font-medium">No bookings match your filters</p>
-          <Button asChild variant="outline" size="sm" className="mt-1">
-            <Link href="/dashboard/admin/bookings">Clear filters</Link>
-          </Button>
-        </div>
-      ) : (
-        <>
-          <p className="text-sm text-muted-foreground">
-            Showing{" "}
-            <span className="font-medium text-foreground">{visible.length}</span>{" "}
-            of {bookings.length}
-          </p>
+      <RefetchBoundary fallback={<RowListSkeleton />}>
+        {bookings.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-16 text-center">
+            <CalendarX className="size-8 text-muted-foreground" />
+            <p className="font-medium">No bookings yet</p>
+            <p className="max-w-sm text-sm text-muted-foreground">
+              Bookings will appear here as customers book technicians.
+            </p>
+          </div>
+        ) : visible.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-16 text-center">
+            <SearchX className="size-8 text-muted-foreground" />
+            <p className="font-medium">No bookings match your filters</p>
+            <Button asChild variant="outline" size="sm" className="mt-1">
+              <Link href="/dashboard/admin/bookings">Clear filters</Link>
+            </Button>
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">
+              Showing{" "}
+              <span className="font-medium text-foreground">
+                {visible.length}
+              </span>{" "}
+              of {bookings.length}
+            </p>
 
-          <ul className="space-y-4">
-            {visible.map((booking) => {
-              const derived = deriveBookingStatus(
-                booking.status,
-                booking.payment?.status,
-              );
-              const { icon: Icon, tint } = visualForCategory(
-                booking.service.category.name,
-              );
+            <ul className="space-y-4">
+              {visible.map((booking) => {
+                const derived = deriveBookingStatus(
+                  booking.status,
+                  booking.payment?.status,
+                );
+                const { icon: Icon, tint } = visualForCategory(
+                  booking.service.category.name,
+                );
 
-              return (
-                <li key={booking.id} className="rounded-2xl border bg-card p-5">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="flex min-w-0 items-start gap-3">
-                      <span
-                        className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${tint}`}
-                      >
-                        <Icon className="size-5" />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-muted-foreground">
-                          {booking.service.category.name}
-                        </p>
-                        <h2 className="font-semibold leading-snug tracking-tight text-balance">
-                          {booking.service.title}
-                        </h2>
+                return (
+                  <li
+                    key={booking.id}
+                    className="rounded-2xl border bg-card p-5"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex min-w-0 items-start gap-3">
+                        <span
+                          className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${tint}`}
+                        >
+                          <Icon className="size-5" />
+                        </span>
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium text-muted-foreground">
+                            {booking.service.category.name}
+                          </p>
+                          <h2 className="font-semibold leading-snug tracking-tight text-balance">
+                            {booking.service.title}
+                          </h2>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <span className="text-lg font-semibold tracking-tight">
+                          {formatPrice(booking.service.price)}
+                        </span>
+                        <BookingStatusBadge status={derived} />
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-end gap-2">
-                      <span className="text-lg font-semibold tracking-tight">
-                        {formatPrice(booking.service.price)}
-                      </span>
-                      <BookingStatusBadge status={derived} />
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <PaymentStatusChip payment={booking.payment} />
+                      {booking.review.length > 0 && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-1 text-xs font-medium text-brand">
+                          <Star className="size-3 fill-brand text-brand" />
+                          Reviewed {booking.review[0].rating}/5
+                        </span>
+                      )}
                     </div>
-                  </div>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <PaymentStatusChip payment={booking.payment} />
-                    {booking.review.length > 0 && (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-1 text-xs font-medium text-brand">
-                        <Star className="size-3 fill-brand text-brand" />
-                        Reviewed {booking.review[0].rating}/5
-                      </span>
-                    )}
-                  </div>
+                    <dl className="mt-4 grid gap-x-6 gap-y-2 border-t pt-4 text-sm sm:grid-cols-2">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <UserRound className="size-3.5 shrink-0" />
+                        <dt className="sr-only">Customer</dt>
+                        <dd className="truncate text-foreground">
+                          {booking.user.name}
+                        </dd>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Wrench className="size-3.5 shrink-0" />
+                        <dt className="sr-only">Technician</dt>
+                        <dd className="truncate text-foreground">
+                          {booking.technician.user.name}
+                        </dd>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <CalendarClock className="size-3.5 shrink-0" />
+                        <dt className="sr-only">Scheduled</dt>
+                        <dd className="truncate text-foreground">
+                          {dateTimeFormatter.format(
+                            new Date(booking.scheduled_at),
+                          )}
+                        </dd>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <MapPin className="size-3.5 shrink-0" />
+                        <dt className="sr-only">Address</dt>
+                        <dd className="truncate text-foreground">
+                          {booking.address}
+                        </dd>
+                      </div>
+                    </dl>
 
-                  <dl className="mt-4 grid gap-x-6 gap-y-2 border-t pt-4 text-sm sm:grid-cols-2">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <UserRound className="size-3.5 shrink-0" />
-                      <dt className="sr-only">Customer</dt>
-                      <dd className="truncate text-foreground">
-                        {booking.user.name}
-                      </dd>
+                    <div className="mt-4 flex justify-end">
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/dashboard/admin/bookings/${booking.id}`}>
+                          Details
+                        </Link>
+                      </Button>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Wrench className="size-3.5 shrink-0" />
-                      <dt className="sr-only">Technician</dt>
-                      <dd className="truncate text-foreground">
-                        {booking.technician.user.name}
-                      </dd>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <CalendarClock className="size-3.5 shrink-0" />
-                      <dt className="sr-only">Scheduled</dt>
-                      <dd className="truncate text-foreground">
-                        {dateTimeFormatter.format(new Date(booking.scheduled_at))}
-                      </dd>
-                    </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="size-3.5 shrink-0" />
-                      <dt className="sr-only">Address</dt>
-                      <dd className="truncate text-foreground">
-                        {booking.address}
-                      </dd>
-                    </div>
-                  </dl>
-
-                  <div className="mt-4 flex justify-end">
-                    <Button asChild variant="outline" size="sm">
-                      <Link href={`/dashboard/admin/bookings/${booking.id}`}>
-                        Details
-                      </Link>
-                    </Button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </RefetchBoundary>
     </div>
   );
 };

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRefetchTransition } from "@/components/refetch-boundary";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,6 +87,7 @@ const TechnicianFilters = ({
   onNavigate?: () => void;
 }) => {
   const router = useRouter();
+  const withSkeleton = useRefetchTransition();
   const searchParams = useSearchParams();
 
   const [searchTerm, setSearchTerm] = useState(query.searchTerm);
@@ -105,9 +107,11 @@ const TechnicianFilters = ({
       }
     }
 
-    router.replace(
-      params.toString() ? `/technicians?${params}` : "/technicians",
-      { scroll: false },
+    withSkeleton(() =>
+      router.replace(
+        params.toString() ? `/technicians?${params}` : "/technicians",
+        { scroll: false },
+      ),
     );
   };
 
@@ -140,9 +144,11 @@ const TechnicianFilters = ({
         }
       }
 
-      router.replace(
-        params.toString() ? `/technicians?${params}` : "/technicians",
-        { scroll: false },
+      withSkeleton(() =>
+        router.replace(
+          params.toString() ? `/technicians?${params}` : "/technicians",
+          { scroll: false },
+        ),
       );
     }, 400);
 
@@ -155,6 +161,7 @@ const TechnicianFilters = ({
     maxRate,
     searchParams,
     router,
+    withSkeleton,
   ]);
 
   const clearAll = () => {
@@ -163,7 +170,7 @@ const TechnicianFilters = ({
     setMaxExperience("");
     setMinRate("");
     setMaxRate("");
-    router.replace("/technicians", { scroll: false });
+    withSkeleton(() => router.replace("/technicians", { scroll: false }));
     onNavigate?.();
   };
 
@@ -171,11 +178,11 @@ const TechnicianFilters = ({
   const hasFilters =
     Boolean(
       searchTerm ||
-        minExperience ||
-        maxExperience ||
-        minRate ||
-        maxRate ||
-        query.skills,
+      minExperience ||
+      maxExperience ||
+      minRate ||
+      maxRate ||
+      query.skills,
     ) || sortValue !== DEFAULT_TECHNICIAN_SORT;
 
   return (

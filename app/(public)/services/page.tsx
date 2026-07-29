@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/link";
 import { SearchX, ServerCrash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import ServiceCard from "@/components/service-card";
+import RefetchBoundary from "@/components/refetch-boundary";
 import ServiceFilters from "./service-filters";
 import FiltersSheet from "./filters-sheet";
 import ActiveFilters from "./active-filters";
@@ -101,7 +102,8 @@ const Results = async ({
   return (
     <>
       <p className="text-sm text-muted-foreground">
-        Showing <span className="font-medium text-foreground">{services.length}</span>{" "}
+        Showing{" "}
+        <span className="font-medium text-foreground">{services.length}</span>{" "}
         {services.length === 1 ? "service" : "services"}
       </p>
       <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -168,9 +170,16 @@ const ServicesPage = async ({
           <div className="mb-5">
             <ActiveFilters {...filterProps} />
           </div>
-          <Suspense key={toSearchString(query)} fallback={<ResultsSkeleton />}>
-            <Results query={query} isAuthenticated={Boolean(user)} />
-          </Suspense>
+          {/* Suspense covers first paint; RefetchBoundary covers filter changes,
+              where the new key does not exist until the payload already arrived. */}
+          <RefetchBoundary fallback={<ResultsSkeleton />}>
+            <Suspense
+              key={toSearchString(query)}
+              fallback={<ResultsSkeleton />}
+            >
+              <Results query={query} isAuthenticated={Boolean(user)} />
+            </Suspense>
+          </RefetchBoundary>
         </section>
       </div>
     </div>

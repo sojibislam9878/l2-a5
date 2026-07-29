@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import Providers from "@/components/providers";
 import ExtensionAttributeGuard from "@/components/extension-attribute-guard";
+import RouteProgress from "@/components/route-progress";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,6 +38,10 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
         <ExtensionAttributeGuard />
+        {/* useSearchParams needs a boundary or it opts static routes out of prerendering. */}
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         <Providers>{children}</Providers>
       </body>
     </html>

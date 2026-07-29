@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/link";
 import { redirect } from "next/navigation";
 import {
   CircleCheck,
@@ -12,6 +12,8 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import UserFilters from "./user-filters";
+import RefetchBoundary from "@/components/refetch-boundary";
+import RowListSkeleton from "@/components/row-list-skeleton";
 import UserStatusButton from "@/components/user-status-button";
 import { apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
@@ -139,102 +141,108 @@ const AdminUsersPage = async ({
         ))}
       </dl>
 
-      <UserFilters q={first(params.q)} role={roleFilter} status={statusFilter} />
+      <UserFilters
+        q={first(params.q)}
+        role={roleFilter}
+        status={statusFilter}
+      />
 
-      {visible.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-16 text-center">
-          <SearchX className="size-8 text-muted-foreground" />
-          <p className="font-medium">No users match your filters</p>
-          <Button asChild variant="outline" size="sm" className="mt-1">
-            <Link href="/dashboard/admin/users">Clear filters</Link>
-          </Button>
-        </div>
-      ) : (
-        <>
-          <p className="text-sm text-muted-foreground">
-            Showing{" "}
-            <span className="font-medium text-foreground">
-              {visible.length}
-            </span>{" "}
-            of {platformUsers.length}
-          </p>
+      <RefetchBoundary fallback={<RowListSkeleton divided />}>
+        {visible.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-16 text-center">
+            <SearchX className="size-8 text-muted-foreground" />
+            <p className="font-medium">No users match your filters</p>
+            <Button asChild variant="outline" size="sm" className="mt-1">
+              <Link href="/dashboard/admin/users">Clear filters</Link>
+            </Button>
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-muted-foreground">
+              Showing{" "}
+              <span className="font-medium text-foreground">
+                {visible.length}
+              </span>{" "}
+              of {platformUsers.length}
+            </p>
 
-          <ul className="divide-y rounded-2xl border bg-card">
-            {visible.map((user) => {
-              const isActive = user.status === "unban";
-              const isTechnician = user.role === "technician";
+            <ul className="divide-y rounded-2xl border bg-card">
+              {visible.map((user) => {
+                const isActive = user.status === "unban";
+                const isTechnician = user.role === "technician";
 
-              return (
-                <li
-                  key={user.id}
-                  className="flex flex-wrap items-center gap-4 p-4 sm:flex-nowrap"
-                >
-                  <Avatar className="size-10 shrink-0">
-                    <AvatarFallback
-                      className={
-                        isTechnician
-                          ? "bg-brand/12 text-xs font-medium text-brand"
-                          : "bg-muted text-xs font-medium"
-                      }
-                    >
-                      {initialsOf(user.name)}
-                    </AvatarFallback>
-                  </Avatar>
+                return (
+                  <li
+                    key={user.id}
+                    className="flex flex-wrap items-center gap-4 p-4 sm:flex-nowrap"
+                  >
+                    <Avatar className="size-10 shrink-0">
+                      <AvatarFallback
+                        className={
+                          isTechnician
+                            ? "bg-brand/12 text-xs font-medium text-brand"
+                            : "bg-muted text-xs font-medium"
+                        }
+                      >
+                        {initialsOf(user.name)}
+                      </AvatarFallback>
+                    </Avatar>
 
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium">{user.name}</p>
-                    <p className="truncate text-sm text-muted-foreground">
-                      {user.email}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{user.name}</p>
+                      <p className="truncate text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+
+                    <div className="flex min-w-0 flex-col gap-1 sm:w-32">
+                      <span className="flex items-center gap-1.5 text-xs font-medium">
+                        {isTechnician ? (
+                          <Wrench className="size-3 text-brand" />
+                        ) : (
+                          <UserRound className="size-3 text-muted-foreground" />
+                        )}
+                        {isTechnician ? "Technician" : "Customer"}
+                      </span>
+                      <span
+                        className={`flex items-center gap-1.5 text-xs ${
+                          isActive
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-destructive"
+                        }`}
+                      >
+                        {isActive ? (
+                          <CircleCheck className="size-3" />
+                        ) : (
+                          <CircleSlash className="size-3" />
+                        )}
+                        {isActive ? "Active" : "Banned"}
+                      </span>
+                    </div>
+
+                    <p className="hidden text-xs text-muted-foreground lg:block lg:w-28">
+                      Joined {dateFormatter.format(new Date(user.createdAt))}
                     </p>
-                  </div>
 
-                  <div className="flex min-w-0 flex-col gap-1 sm:w-32">
-                    <span className="flex items-center gap-1.5 text-xs font-medium">
-                      {isTechnician ? (
-                        <Wrench className="size-3 text-brand" />
-                      ) : (
-                        <UserRound className="size-3 text-muted-foreground" />
-                      )}
-                      {isTechnician ? "Technician" : "Customer"}
-                    </span>
-                    <span
-                      className={`flex items-center gap-1.5 text-xs ${
-                        isActive
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-destructive"
-                      }`}
-                    >
-                      {isActive ? (
-                        <CircleCheck className="size-3" />
-                      ) : (
-                        <CircleSlash className="size-3" />
-                      )}
-                      {isActive ? "Active" : "Banned"}
-                    </span>
-                  </div>
-
-                  <p className="hidden text-xs text-muted-foreground lg:block lg:w-28">
-                    Joined {dateFormatter.format(new Date(user.createdAt))}
-                  </p>
-
-                  <div className="flex shrink-0 gap-2">
-                    <UserStatusButton
-                      userId={user.id}
-                      name={user.name}
-                      status={user.status}
-                    />
-                    <Button asChild variant="outline" size="sm">
-                      <Link href={`/dashboard/admin/users/${user.id}`}>
-                        Details
-                      </Link>
-                    </Button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      )}
+                    <div className="flex shrink-0 gap-2">
+                      <UserStatusButton
+                        userId={user.id}
+                        name={user.name}
+                        status={user.status}
+                      />
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/dashboard/admin/users/${user.id}`}>
+                          Details
+                        </Link>
+                      </Button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </RefetchBoundary>
     </div>
   );
 };

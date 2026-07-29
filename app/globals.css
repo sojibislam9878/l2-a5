@@ -146,3 +146,45 @@
     @apply font-sans;
   }
 }
+
+/* Route transition indicator.
+   Both parts start invisible and fade in after a delay, so a navigation that
+   resolves quickly shows nothing at all instead of a distracting flash. */
+@keyframes route-progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+@keyframes route-progress-in {
+  to {
+    opacity: 1;
+  }
+}
+
+.route-progress-bar {
+  opacity: 0;
+  animation:
+    route-progress-in 150ms ease 150ms forwards,
+    route-progress-slide 1.1s cubic-bezier(0.65, 0, 0.35, 1) 150ms infinite;
+}
+
+.route-progress-pill {
+  opacity: 0;
+  animation: route-progress-in 200ms ease 400ms forwards;
+}
+
+/* Keep the affordance, drop the motion. */
+@media (prefers-reduced-motion: reduce) {
+  .route-progress-bar {
+    width: 100%;
+    animation: route-progress-in 150ms ease 150ms forwards;
+  }
+
+  .route-progress-pill {
+    animation-delay: 150ms;
+  }
+}
