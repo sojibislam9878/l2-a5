@@ -41,7 +41,7 @@ const steps = [
 ];
 
 const CardsSkeleton = ({ count = 3 }: { count?: number }) => (
-  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
     {Array.from({ length: count }, (_, index) => (
       <div key={index} className="space-y-4 rounded-2xl border bg-card p-5">
         <div className="flex gap-3">
@@ -99,6 +99,26 @@ const StatsBand = async () => {
   );
 };
 
+// Mirrors CategoryGrid's shape exactly — a service-card skeleton here collapses
+// to rows less than half its height, which reads as a jump on a single-column phone.
+const CategoriesSkeleton = ({ count = 6 }: { count?: number }) => (
+  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    {Array.from({ length: count }, (_, index) => (
+      <div
+        key={index}
+        className="flex items-center gap-3 rounded-xl border bg-card p-4"
+      >
+        <Skeleton className="size-10 shrink-0 rounded-lg" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <Skeleton className="h-3.5 w-24" />
+          <Skeleton className="h-3 w-4/5" />
+        </div>
+        <Skeleton className="size-4 shrink-0 rounded-sm" />
+      </div>
+    ))}
+  </div>
+);
+
 const CategoryGrid = async () => {
   const categories =
     (await apiRequest<Category[]>("/api/categories", {
@@ -110,7 +130,10 @@ const CategoryGrid = async () => {
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    // grid-cols-1 is load-bearing: without it the implicit `auto` track takes its
+    // base size from min-content, and `truncate`'s nowrap makes that the whole
+    // sentence — blowing the track past the container. minmax(0,1fr) clamps it.
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {categories.slice(0, 6).map((category) => {
         const { icon: Icon, tint } = visualForCategory(category.name);
 
@@ -167,7 +190,7 @@ const FeaturedServices = async () => {
   }
 
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {services.slice(0, 6).map((service) => (
         <ServiceCard
           key={service.id}
@@ -271,7 +294,7 @@ const HomePage = () => {
         </div>
 
         <div className="mt-8">
-          <Suspense fallback={<CardsSkeleton count={6} />}>
+          <Suspense fallback={<CategoriesSkeleton />}>
             <CategoryGrid />
           </Suspense>
         </div>

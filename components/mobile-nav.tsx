@@ -36,7 +36,7 @@ const MobileNav = ({
           <Menu />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-72 p-0">
+      <SheetContent side="left" className="w-72 max-w-[85vw] p-0">
         <SheetHeader className="border-b px-5 py-4">
           <SheetTitle className="flex items-center gap-2 text-base">
             <span className="flex size-7 items-center justify-center rounded-lg bg-brand text-brand-foreground">

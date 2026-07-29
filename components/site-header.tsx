@@ -13,25 +13,26 @@ const SiteHeader = async () => {
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
-        {/* Equal-basis side groups keep the nav centred regardless of their widths. */}
-        <div className="flex flex-1 items-center gap-3">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
+        {/* Equal-basis side groups centre the nav — only from md, where that nav exists.
+            Below md they size to content instead, or the halves overflow the row. */}
+        <div className="flex min-w-0 items-center gap-1 sm:gap-2 md:flex-1">
           <MobileNav links={PUBLIC_LINKS} isAuthenticated={Boolean(user)} />
 
           <Link
             href="/"
-            className="flex items-center gap-2 font-semibold tracking-tight"
+            className="flex min-w-0 items-center gap-2 font-semibold tracking-tight"
           >
-            <span className="flex size-8 items-center justify-center rounded-xl bg-brand text-brand-foreground shadow-sm shadow-brand/25">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-brand text-brand-foreground shadow-sm shadow-brand/25">
               <Wrench className="size-4" />
             </span>
-            FixItNow
+            <span className="truncate">FixItNow</span>
           </Link>
         </div>
 
         <MainNav links={PUBLIC_LINKS} />
 
-        <div className="flex flex-1 items-center justify-end gap-1.5">
+        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 md:ml-0 md:flex-1 md:justify-end">
           <ThemeToggle />
           {user ? (
             <UserMenu user={user} />
@@ -45,7 +46,10 @@ const SiteHeader = async () => {
                 size="sm"
                 className="bg-brand text-brand-foreground hover:bg-brand/90"
               >
-                <Link href="/auth/register">Get started</Link>
+                <Link href="/auth/register">
+                  <span className="hidden min-[420px]:inline">Get started</span>
+                  <span className="min-[420px]:hidden">Sign up</span>
+                </Link>
               </Button>
             </>
           )}

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 const ResultsSkeleton = () => (
-  <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
     {Array.from({ length: 6 }, (_, index) => (
       <div key={index} className="space-y-4 rounded-2xl border bg-card p-5">
         <div className="flex gap-3">
@@ -105,7 +105,7 @@ const Results = async ({ query }: { query: TechnicianQuery }) => {
         </span>{" "}
         {technicians.length === 1 ? "technician" : "technicians"}
       </p>
-      <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {technicians.map((technician) => (
           <TechnicianCard key={technician.id} technician={technician} />
         ))}
