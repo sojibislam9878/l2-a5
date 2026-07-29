@@ -2,6 +2,8 @@ import Link from "next/link";
 import {
   CalendarClock,
   CalendarX,
+  CircleCheck,
+  CreditCard,
   MapPin,
   ServerCrash,
   UserRound,
@@ -150,17 +152,41 @@ const CustomerBookings = async () => {
                     </dl>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 border-t pt-4 sm:w-40 sm:flex-col sm:items-end sm:border-t-0 sm:pt-0">
+                  <div className="flex items-center justify-between gap-3 border-t pt-4 sm:w-44 sm:flex-col sm:items-end sm:border-t-0 sm:pt-0">
                     {price && (
                       <span className="text-lg font-semibold tracking-tight">
                         {price}
                       </span>
                     )}
-                    <Button asChild variant="outline" size="sm">
-                      <Link href={`/dashboard/customer/bookings/${booking.id}`}>
-                        View details
-                      </Link>
-                    </Button>
+
+                    {derived === "paid" && (
+                      <span className="flex items-center gap-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                        <CircleCheck className="size-4" />
+                        Paid
+                      </span>
+                    )}
+
+                    <div className="flex gap-2">
+                      {derived === "accepted" && (
+                        <Button
+                          asChild
+                          size="sm"
+                          className="bg-brand text-brand-foreground hover:bg-brand/90"
+                        >
+                          <Link
+                            href={`/dashboard/customer/bookings/${booking.id}/pay`}
+                          >
+                            <CreditCard />
+                            Pay now
+                          </Link>
+                        </Button>
+                      )}
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/dashboard/customer/bookings/${booking.id}`}>
+                          Details
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </li>

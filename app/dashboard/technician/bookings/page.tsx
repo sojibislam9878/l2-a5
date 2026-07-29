@@ -7,10 +7,12 @@ import {
   MapPin,
   Phone,
   ServerCrash,
+  Star,
   StickyNote,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import BookingStatusBadge from "@/components/booking-status-badge";
+import PaymentStatusChip from "@/components/payment-status-chip";
 import JobActions from "./job-actions";
 import { apiRequest } from "@/lib/api-client";
 import { getCurrentUser } from "@/lib/dal";
@@ -156,7 +158,7 @@ const JobsPage = async () => {
                       </h2>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center justify-end gap-2">
                     {price && (
                       <span className="text-lg font-semibold tracking-tight">
                         {price}
@@ -164,6 +166,16 @@ const JobsPage = async () => {
                     )}
                     <BookingStatusBadge status={derived} />
                   </div>
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <PaymentStatusChip payment={job.payment} />
+                  {job.review.length > 0 && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-2.5 py-1 text-xs font-medium text-brand">
+                      <Star className="size-3 fill-brand text-brand" />
+                      Reviewed {job.review[0].rating}/5
+                    </span>
+                  )}
                 </div>
 
                 <div className="mt-4 grid gap-4 border-t pt-4 sm:grid-cols-2">

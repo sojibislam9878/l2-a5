@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   CalendarClock,
   Check,
+  CircleCheck,
   CreditCard,
   Hash,
   Mail,
@@ -302,6 +303,25 @@ const BookingDetailPage = async ({
               {price ?? "—"}
             </p>
           </div>
+
+          {derived === "accepted" && (
+            <Button
+              asChild
+              className="w-full bg-brand text-brand-foreground hover:bg-brand/90"
+            >
+              <Link href={`/dashboard/customer/bookings/${booking.id}/pay`}>
+                <CreditCard />
+                Pay now
+              </Link>
+            </Button>
+          )}
+
+          {derived === "paid" && (
+            <p className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-2.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+              <CircleCheck className="size-4" />
+              Paid
+            </p>
+          )}
 
           <Separator />
 
