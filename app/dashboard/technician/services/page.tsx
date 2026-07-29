@@ -20,7 +20,7 @@ const ServicesPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/technician/services");
+    redirect("/auth/login?redirect=/dashboard/technician/services");
   }
 
   if (user.role !== "technician") {

@@ -82,7 +82,7 @@ const BookingDetailPage = async ({
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect(`/login?redirect=/dashboard/customer/bookings/${id}`);
+    redirect(`/auth/login?redirect=/dashboard/customer/bookings/${id}`);
   }
 
   const token = await getSessionToken();

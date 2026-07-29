@@ -40,7 +40,7 @@ const PayPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect(`/login?redirect=/dashboard/customer/bookings/${id}/pay`);
+    redirect(`/auth/login?redirect=/dashboard/customer/bookings/${id}/pay`);
   }
 
   if (user.role === "admin") {

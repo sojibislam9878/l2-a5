@@ -39,7 +39,6 @@ export const updateProfileAction = async (
       return { ok: false, message: "Could not update your profile." };
     }
 
-    revalidatePath("/dashboard/profile");
     revalidatePath("/", "layout");
 
     return { ok: true, user };

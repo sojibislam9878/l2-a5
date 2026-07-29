@@ -53,7 +53,7 @@ export const updateTechnicianProfileAction = async (
       return { ok: false, message: "Could not update your service profile." };
     }
 
-    revalidatePath("/dashboard/profile");
+    revalidatePath("/dashboard", "layout");
 
     return { ok: true, profile };
   } catch (error) {

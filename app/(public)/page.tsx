@@ -229,7 +229,7 @@ const HomePage = () => {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href="/register">
+                  <Link href="/auth/register">
                     <Wrench />
                     Join as a technician
                   </Link>
@@ -383,7 +383,7 @@ const HomePage = () => {
                 size="lg"
                 className="bg-brand text-brand-foreground hover:bg-brand/90"
               >
-                <Link href="/register">Create an account</Link>
+                <Link href="/auth/register">Create an account</Link>
               </Button>
               <Button
                 asChild
@@ -391,7 +391,7 @@ const HomePage = () => {
                 variant="ghost"
                 className="text-neutral-100 hover:bg-white/10 hover:text-white"
               >
-                <Link href="/login">
+                <Link href="/auth/login">
                   Sign in
                   <ArrowRight />
                 </Link>

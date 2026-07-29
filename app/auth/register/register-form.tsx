@@ -79,7 +79,7 @@ const RegisterForm = () => {
       }
 
       toast.success("Account created. Please sign in to continue.");
-      router.push("/login");
+      router.push("/auth/login");
     });
   };
 
@@ -92,7 +92,7 @@ const RegisterForm = () => {
         <p className="text-sm text-muted-foreground">
           Already registered?{" "}
           <Link
-            href="/login"
+            href="/auth/login"
             className="font-medium text-foreground underline decoration-brand decoration-2 underline-offset-4 transition-colors hover:text-brand"
           >
             Sign in

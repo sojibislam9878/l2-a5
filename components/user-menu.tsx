@@ -47,7 +47,7 @@ const UserMenu = ({ user }: { user: User }) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="gap-2">
-          <Link href="/dashboard/profile">
+          <Link href={`/dashboard/${user.role}`}>
             <LayoutDashboard className="size-4" />
             Dashboard
           </Link>

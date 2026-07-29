@@ -144,7 +144,7 @@ const AdminBookingDetailPage = async ({
   const viewer = await getCurrentUser();
 
   if (!viewer) {
-    redirect(`/login?redirect=/dashboard/admin/bookings/${id}`);
+    redirect(`/auth/login?redirect=/dashboard/admin/bookings/${id}`);
   }
 
   if (viewer.role !== "admin") {

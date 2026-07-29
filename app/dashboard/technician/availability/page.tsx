@@ -12,7 +12,7 @@ const AvailabilityPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/technician/availability");
+    redirect("/auth/login?redirect=/dashboard/technician/availability");
   }
 
   if (user.role !== "technician") {

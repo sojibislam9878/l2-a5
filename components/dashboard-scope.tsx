@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const options = [
   { href: "/dashboard", label: "Customer & Technician" },
   { href: "/dashboard/customer/bookings", label: "Customer" },
-  { href: "/dashboard/technician", label: "Technician" },
+  { href: "/dashboard/technician/overview", label: "Technician" },
 ];
 
 const resolveActive = (pathname: string) => {
@@ -15,7 +15,7 @@ const resolveActive = (pathname: string) => {
   }
 
   if (pathname.startsWith("/dashboard/technician")) {
-    return "/dashboard/technician";
+    return "/dashboard/technician/overview";
   }
 
   return "/dashboard";

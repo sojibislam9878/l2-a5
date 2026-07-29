@@ -26,7 +26,7 @@ const BookButton = ({
         size={size}
         className={`bg-brand text-brand-foreground hover:bg-brand/90 ${className}`}
       >
-        <Link href={`/login?redirect=/services/${serviceId}`}>
+        <Link href={`/auth/login?redirect=/services/${serviceId}`}>
           <CalendarPlus />
           Book now
         </Link>

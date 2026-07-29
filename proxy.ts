@@ -54,7 +54,7 @@ const isProtected = (pathname: string) =>
   );
 
 const toLogin = (request: NextRequest) => {
-  const url = new URL("/login", request.url);
+  const url = new URL("/auth/login", request.url);
   url.searchParams.set(
     "redirect",
     `${request.nextUrl.pathname}${request.nextUrl.search}`,

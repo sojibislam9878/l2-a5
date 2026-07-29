@@ -12,7 +12,7 @@ const CustomerBookingsPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/customer/bookings");
+    redirect("/auth/login?redirect=/dashboard/customer/bookings");
   }
 
   if (user.role !== "customer" && user.role !== "technician") {

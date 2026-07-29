@@ -12,7 +12,7 @@ const DashboardLayout = async ({
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/profile");
+    redirect("/auth/login?redirect=/dashboard");
   }
 
   return (

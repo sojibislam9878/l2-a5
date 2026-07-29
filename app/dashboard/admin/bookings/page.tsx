@@ -46,7 +46,7 @@ const AdminBookingsPage = async ({
   const viewer = await getCurrentUser();
 
   if (!viewer) {
-    redirect("/login?redirect=/dashboard/admin/bookings");
+    redirect("/auth/login?redirect=/dashboard/admin/bookings");
   }
 
   if (viewer.role !== "admin") {

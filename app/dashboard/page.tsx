@@ -34,7 +34,7 @@ const DashboardPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard");
+    redirect("/auth/login?redirect=/dashboard");
   }
 
   if (user.role !== "technician") {

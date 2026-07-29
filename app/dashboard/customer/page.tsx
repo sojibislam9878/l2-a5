@@ -1,7 +1,25 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import DashboardProfile from "@/components/dashboard-profile";
+import { getCurrentUser } from "@/lib/dal";
 
-const CustomerDashboardPage = () => {
-  redirect("/dashboard/customer/bookings");
+export const metadata: Metadata = {
+  title: "Profile",
+  description: "Manage your FixItNow account details.",
 };
 
-export default CustomerDashboardPage;
+const CustomerProfilePage = async () => {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/auth/login?redirect=/dashboard/customer");
+  }
+
+  if (user.role !== "customer") {
+    redirect(`/dashboard/${user.role}`);
+  }
+
+  return <DashboardProfile user={user} />;
+};
+
+export default CustomerProfilePage;

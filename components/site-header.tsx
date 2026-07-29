@@ -48,14 +48,14 @@ const SiteHeader = async () => {
           ) : (
             <>
               <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
-                <Link href="/login">Sign in</Link>
+                <Link href="/auth/login">Sign in</Link>
               </Button>
               <Button
                 asChild
                 size="sm"
                 className="bg-brand text-brand-foreground hover:bg-brand/90"
               >
-                <Link href="/register">Get started</Link>
+                <Link href="/auth/register">Get started</Link>
               </Button>
             </>
           )}

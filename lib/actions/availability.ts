@@ -40,7 +40,7 @@ export const updateAvailabilityAction = async (
       },
     );
 
-    revalidatePath("/dashboard/profile");
+    revalidatePath("/dashboard", "layout");
 
     return { ok: true, availability: availability ?? [] };
   } catch (error) {

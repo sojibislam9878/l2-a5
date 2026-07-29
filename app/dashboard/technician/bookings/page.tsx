@@ -39,7 +39,7 @@ const JobsPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/technician/bookings");
+    redirect("/auth/login?redirect=/dashboard/technician/bookings");
   }
 
   if (user.role !== "technician") {

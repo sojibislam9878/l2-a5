@@ -55,7 +55,7 @@ const AdminUserDetailPage = async ({
   const viewer = await getCurrentUser();
 
   if (!viewer) {
-    redirect(`/login?redirect=/dashboard/admin/users/${id}`);
+    redirect(`/auth/login?redirect=/dashboard/admin/users/${id}`);
   }
 
   if (viewer.role !== "admin") {

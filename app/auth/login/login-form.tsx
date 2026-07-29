@@ -57,7 +57,7 @@ const LoginForm = ({ redirectTo }: { redirectTo?: string }) => {
         <p className="text-sm text-muted-foreground">
           New to FixItNow?{" "}
           <Link
-            href="/register"
+            href="/auth/register"
             className="font-medium text-foreground underline decoration-brand decoration-2 underline-offset-4 transition-colors hover:text-brand"
           >
             Create an account

@@ -18,8 +18,10 @@ import type { Role } from "@/lib/types";
 
 type NavItem = { href: string; label: string; icon: LucideIcon; exact?: boolean };
 
-const ACCOUNT: NavItem[] = [
-  { href: "/dashboard/profile", label: "Profile", icon: UserRound },
+// Profile lives at the root of each role's namespace, so its href is
+// role-dependent and must match exactly (or it highlights on every sub-route).
+const accountItems = (role: Role): NavItem[] => [
+  { href: `/dashboard/${role}`, label: "Profile", icon: UserRound, exact: true },
 ];
 
 const CUSTOMER: NavItem[] = [
@@ -37,10 +39,9 @@ const CUSTOMER: NavItem[] = [
 
 const TECHNICIAN: NavItem[] = [
   {
-    href: "/dashboard/technician",
+    href: "/dashboard/technician/overview",
     label: "Overview",
     icon: LayoutDashboard,
-    exact: true,
   },
   {
     href: "/dashboard/technician/bookings",
@@ -93,7 +94,10 @@ const DashboardNav = ({ role }: { role: Role }) => {
             ? [{ label: "Technician", items: TECHNICIAN }]
             : both;
 
-  const sections = [{ label: "Account", items: ACCOUNT }, ...contextSections];
+  const sections = [
+    { label: "Account", items: accountItems(role) },
+    ...contextSections,
+  ];
 
   const isActive = (item: NavItem) =>
     item.exact

@@ -40,7 +40,7 @@ const PaymentsPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login?redirect=/dashboard/customer/payments");
+    redirect("/auth/login?redirect=/dashboard/customer/payments");
   }
 
   if (user.role === "admin") {

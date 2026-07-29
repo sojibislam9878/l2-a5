@@ -19,8 +19,8 @@ const safeRedirect = (value: unknown) =>
   typeof value === "string" &&
   value.startsWith("/") &&
   !value.startsWith("//") &&
-  !value.startsWith("/login") &&
-  !value.startsWith("/register")
+  !value.startsWith("/auth/login") &&
+  !value.startsWith("/auth/register")
     ? value
     : "/";
 

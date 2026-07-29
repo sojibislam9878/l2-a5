@@ -146,7 +146,7 @@ const BookingDialog = ({
                       {formError}
                       {needsLogin && (
                         <Link
-                          href={`/login?redirect=/services/${serviceId}`}
+                          href={`/auth/login?redirect=/services/${serviceId}`}
                           className="font-medium underline underline-offset-2"
                         >
                           Sign in

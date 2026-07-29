@@ -59,7 +59,7 @@ const MobileNav = ({
         {!isAuthenticated && (
           <div className="mt-auto flex flex-col gap-2 border-t px-5 py-4">
             <Button asChild variant="outline">
-              <Link href="/login" onClick={() => setOpen(false)}>
+              <Link href="/auth/login" onClick={() => setOpen(false)}>
                 Sign in
               </Link>
             </Button>
@@ -67,7 +67,7 @@ const MobileNav = ({
               asChild
               className="bg-brand text-brand-foreground hover:bg-brand/90"
             >
-              <Link href="/register" onClick={() => setOpen(false)}>
+              <Link href="/auth/register" onClick={() => setOpen(false)}>
                 Get started
               </Link>
             </Button>

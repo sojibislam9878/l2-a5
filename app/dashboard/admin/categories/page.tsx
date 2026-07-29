@@ -26,7 +26,7 @@ const AdminCategoriesPage = async () => {
   const viewer = await getCurrentUser();
 
   if (!viewer) {
-    redirect("/login?redirect=/dashboard/admin/categories");
+    redirect("/auth/login?redirect=/dashboard/admin/categories");
   }
 
   if (viewer.role !== "admin") {
