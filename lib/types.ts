@@ -258,6 +258,33 @@ export type TechnicianDetail = {
   service: TechnicianServiceItem[];
 };
 
+export type PaymentListItem = {
+  id: string;
+  booking_id: string;
+  transaction_id: string;
+  amount: string;
+  method: string;
+  status: PaymentStatus;
+  paid_at: string | null;
+  created_at: string;
+  booking: {
+    id: string;
+    scheduled_at: string;
+    status: BookingStatus;
+    address: string;
+    service: {
+      id: string;
+      title: string;
+      price: string;
+      category: Pick<Category, "id" | "name">;
+    };
+    technician: {
+      id: string;
+      user: Pick<User, "id" | "name">;
+    };
+  };
+};
+
 export type ApiSuccess<T> = {
   success: true;
   statusCode: number;

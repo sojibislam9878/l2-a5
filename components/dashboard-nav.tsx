@@ -8,6 +8,7 @@ import {
   ClipboardList,
   LayoutDashboard,
   UserRound,
+  Wallet,
   Wrench,
   type LucideIcon,
 } from "lucide-react";
@@ -24,6 +25,11 @@ const CUSTOMER: NavItem[] = [
     href: "/dashboard/customer/bookings",
     label: "My bookings",
     icon: CalendarCheck,
+  },
+  {
+    href: "/dashboard/customer/payments",
+    label: "My payments",
+    icon: Wallet,
   },
 ];
 
