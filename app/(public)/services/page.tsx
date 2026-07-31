@@ -170,8 +170,6 @@ const ServicesPage = async ({
           <div className="mb-5">
             <ActiveFilters {...filterProps} />
           </div>
-          {/* Suspense covers first paint; RefetchBoundary covers filter changes,
-              where the new key does not exist until the payload already arrived. */}
           <RefetchBoundary fallback={<ResultsSkeleton />}>
             <Suspense
               key={toSearchString(query)}

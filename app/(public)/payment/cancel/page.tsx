@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
 import Link from "@/components/link";
+import { notFound } from "next/navigation";
 import { CircleSlash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { findOwnPaymentBySession } from "@/lib/payment-return";
 
 export const metadata: Metadata = {
   title: "Payment cancelled",
   description: "Your FixItNow payment was not completed.",
 };
 
-const PaymentCancelPage = () => {
+const PaymentCancelPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>;
+}) => {
+  const { session_id } = await searchParams;
+  const payment = await findOwnPaymentBySession(session_id);
+
+  if (!payment) {
+    notFound();
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-5 px-4 py-20 text-center sm:px-6">
       <span className="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
@@ -20,8 +33,12 @@ const PaymentCancelPage = () => {
           Payment cancelled
         </h1>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          You were not charged. Your booking is still accepted, so you can pay
-          whenever you are ready.
+          You were not charged for{" "}
+          <span className="font-medium text-foreground">
+            {payment.booking.service.title}
+          </span>
+          . Your booking is still accepted, so you can pay whenever you are
+          ready.
         </p>
       </div>
 
@@ -30,10 +47,12 @@ const PaymentCancelPage = () => {
           asChild
           className="flex-1 bg-brand text-brand-foreground hover:bg-brand/90"
         >
-          <Link href="/dashboard/customer/bookings">Back to my bookings</Link>
+          <Link href={`/dashboard/customer/bookings/${payment.booking_id}/pay`}>
+            Try payment again
+          </Link>
         </Button>
         <Button asChild variant="outline" className="flex-1">
-          <Link href="/">Go home</Link>
+          <Link href="/dashboard/customer/bookings">My bookings</Link>
         </Button>
       </div>
     </div>

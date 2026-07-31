@@ -78,7 +78,7 @@ const UserStatusButton = ({
             {banning ? (
               <>
                 <span className="font-medium text-foreground">{name}</span> will
-                be blocked from every action — browsing stays possible, but they
+                be blocked from every action. Browsing stays possible, but they
                 cannot book, pay, review, or manage jobs until you unban them.
               </>
             ) : (

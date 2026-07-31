@@ -13,8 +13,6 @@ const GlobalError = ({
     console.error(error);
   }, [error]);
 
-  // global-error replaces the root layout, so globals.css never loads here.
-  // Everything must be inline, and dark mode handled without Tailwind.
   return (
     <html lang="en">
       <head>

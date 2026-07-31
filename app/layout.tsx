@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "FixItNow — Your Trusted Home Service Platform",
+    default: "FixItNow | Your Trusted Home Service Platform",
     template: "%s | FixItNow",
   },
   description:
@@ -38,7 +38,6 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
         <ExtensionAttributeGuard />
-        {/* useSearchParams needs a boundary or it opts static routes out of prerendering. */}
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>

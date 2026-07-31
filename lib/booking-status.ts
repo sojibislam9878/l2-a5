@@ -22,7 +22,6 @@ export const deriveBookingStatus = (
   return paymentStatus === "completed" ? "paid" : "accepted";
 };
 
-// A customer may withdraw their request only while the technician has not acted on it.
 export const isCancellable = (status: BookingStatus) => status === "pending";
 
 export const STATUS_META: Record<

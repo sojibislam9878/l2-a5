@@ -1,10 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Placeholder for the admin list pages. `divided` matches the single bordered
- * card used for users; the default matches the separate stacked cards used for
- * bookings, so the skeleton keeps the same footprint as the real list.
- */
 const RowListSkeleton = ({
   count = 6,
   divided = false,

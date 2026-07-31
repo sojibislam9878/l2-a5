@@ -27,7 +27,6 @@ const DashboardLayout = async ({
           <div className="grid gap-6 lg:grid-cols-[17rem_1fr] lg:gap-8">
             <aside className="lg:sticky lg:top-24 lg:h-fit">
               <div className="space-y-4 rounded-2xl border bg-card p-4 shadow-sm">
-                {/* The header already shows who you are on small screens. */}
                 <div className="hidden items-center gap-3 px-1 lg:flex">
                   <Avatar className="size-10">
                     <AvatarFallback className="bg-brand/12 text-sm font-medium text-brand">

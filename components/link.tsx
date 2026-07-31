@@ -5,8 +5,6 @@ import { useEffect } from "react";
 import NextLink, { useLinkStatus } from "next/link";
 import { routeProgress } from "@/lib/route-progress";
 
-// useLinkStatus only works inside a Link, so every link carries this reporter and
-// feeds one global indicator. Renders no DOM, so it cannot affect any layout.
 const PendingReporter = () => {
   const { pending } = useLinkStatus();
 

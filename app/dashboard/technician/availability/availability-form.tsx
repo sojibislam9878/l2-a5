@@ -188,7 +188,7 @@ const AvailabilityForm = ({
         )}
         <p className="text-xs text-muted-foreground">
           {totalBlocks === 0
-            ? "No hours set — customers cannot book you."
+            ? "No hours set, so customers cannot book you."
             : `${totalBlocks} time ${totalBlocks === 1 ? "block" : "blocks"} across the week.`}
         </p>
       </div>

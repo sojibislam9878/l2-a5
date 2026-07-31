@@ -185,9 +185,10 @@ On the backend side, set **`FRONTEND_URL`** to the deployed frontend origin, or 
 
 ## Known gaps
 
-- `logoutAction` clears local cookies but does not call `POST /api/auth/logout`, so refresh tokens are not revoked server-side.
-- `/payment/success` and `/payment/cancel` are public and do not verify the `session_id` against the signed-in user's payments.
+- `logoutAction` clears local cookies but does not call `POST /api/auth/logout`, so refresh tokens are not revoked server-side. Refresh tokens are stateless, so nothing can be revoked at all.
 - `@tanstack/react-query` is installed and its provider mounted, but nothing uses `useQuery`/`useMutation` — Server Components and Server Actions cover all data flow. Safe to remove.
 - No accessibility audit or full responsive audit has been done beyond fixing specific reported issues.
-- Backend: `GET /api/users` leaks bcrypt hashes (unused here); no full booking status transition matrix; no server-side validation of `scheduled_at`. See [API_INTEGRATION.md §5](API_INTEGRATION.md).
+- Backend, from the 2026-07-31 security review: a **banned user can still log in** (login has no status check, though refresh does) and `GET /api/auth/me` skips the ban check — mutations are still blocked, so it is read-only exposure; `globalErrorHandler` returns the whole error object, leaking table and column names; **no rate limiting** anywhere; **no server-side password policy** (the API accepts a 1-character password); no booking status transition matrix; no server-side validation of `scheduled_at`. See [API_INTEGRATION.md §5](API_INTEGRATION.md).
+
+**Fixed in that review:** `GET /api/users` no longer returns bcrypt password hashes; the `/payment/*` return pages require a session and verify the `session_id` belongs to the caller; and login no longer leaks which emails are registered, by response *or* by timing.
 - Not implemented (no backend support): location filtering, profile pictures, admin-featured services, password change. The home page's "Featured services" is cheapest-first, not curated.

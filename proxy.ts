@@ -46,7 +46,7 @@ const requestWithTokens = (
   return headers;
 };
 
-const PROTECTED_PREFIXES = ["/dashboard"];
+const PROTECTED_PREFIXES = ["/dashboard", "/payment"];
 
 const isProtected = (pathname: string) =>
   PROTECTED_PREFIXES.some(

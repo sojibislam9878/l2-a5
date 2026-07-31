@@ -277,7 +277,7 @@ const BookingDetailPage = async ({
                 <h2 className="font-semibold tracking-tight">Leave a review</h2>
                 <p className="text-sm text-muted-foreground">
                   {canReview
-                    ? "The job is done and paid — tell other customers how it went."
+                    ? "The job is done and paid. Tell other customers how it went."
                     : "You can review once the job is marked completed and your payment has gone through."}
                 </p>
               </div>

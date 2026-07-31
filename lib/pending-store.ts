@@ -1,5 +1,3 @@
-// A counter rather than a boolean: overlapping work (a second filter clicked
-// before the first settles) must not clear the indicator early.
 export const createPendingStore = () => {
   let pending = 0;
   const listeners = new Set<() => void>();

@@ -52,7 +52,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
               Home repairs, handled by people you can trust.
             </h2>
             <p className="text-[0.95rem] leading-relaxed text-neutral-400">
-              Plumbing, electrical, appliance fixes and more — compare rates,
+              Plumbing, electrical, appliance fixes and more. Compare rates,
               book a slot, and track the job from request to receipt.
             </p>
           </div>

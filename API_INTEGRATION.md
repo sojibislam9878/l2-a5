@@ -63,6 +63,11 @@ apiRequestWithResponse<T>(path, options?): Promise<{ data: T | undefined; respon
 ## 3. Authentication flow
 
 ### Login
+
+**Every failure returns the same `401 "Invalid email or password"`** — unknown email, wrong password, missing field, and non-string input all answer identically. A distinct "user not found" response would let anyone enumerate the user base, which matters more here because there is no rate limiting.
+
+The response body alone is not enough: `bcrypt.compare` only runs when a user exists, so skipping it made unknown emails answer in ~59ms versus ~113ms for known ones — enumerable by stopwatch regardless of the message. Login therefore **always** performs a comparison, falling back to a throwaway hash of the same cost when no user matches, which flattens both branches to ~114ms.
+
 1. `POST /api/auth/login` via `apiRequestWithResponse`.
 2. Read `accessToken` **and** `refreshToken` from the response's `Set-Cookie` header.
 3. Store them as first-party cookies `session` and `session_refresh` (`httpOnly`, `sameSite=lax`, `secure` in production), with `maxAge` derived from each JWT's own `exp`.
@@ -169,7 +174,9 @@ Wrong-role visits always redirect to `` `/dashboard/${user.role}` ``, never to a
 ### Deliberately not used
 | Path | Why |
 |---|---|
-| `GET /api/users` | Bare `prisma.user.findMany()` with no `select`, so it returns every user's **bcrypt password hash**. `GET /api/admin/users` does the same job with a proper `select`. Use that one. |
+| `GET /api/users` | Duplicates `GET /api/admin/users`. Kept (it is part of the assignment's API surface) but **no longer leaks password hashes** — see below. Prefer the admin route. |
+
+> **Fixed 2026-07-31:** `getAllUsersDb` was a bare `prisma.user.findMany()` with no `select`, so the response included every user's **bcrypt `password` hash** (verified: 13/13 users, `$2b$10$…`). It now uses an explicit field whitelist. **Never use a bare `findMany` on `User`** — the default shape includes the hash.
 
 ---
 
@@ -204,8 +211,11 @@ The original backend was missing pieces the requirements needed. Added (with val
 - **A technician could accept a booking the customer had already cancelled** — closed when the cancel feature landed.
 
 ### Still open (backend)
-- 🔴 `GET /api/users` leaks bcrypt hashes (unused here, but should be fixed or deleted).
 - 🟡 No full booking status transition matrix — `complete → pending` is still reachable. Only the `cancel` transition is enforced.
+- 🟡 A **banned user can still log in** (`userLogInDB` has no status check, though `refreshTokensDB` does), and `GET /api/auth/me` skips the ban check because it verifies the cookie inline instead of using the `auth` middleware. Mutations are still blocked, so this is read-only exposure.
+- 🟡 `globalErrorHandler` returns `errorDetails: err` — the whole error object, which leaks table and column names for Prisma errors.
+- 🟡 No rate limiting, and no server-side password policy (the API accepts a 1-character password).
+- 🟡 Refresh tokens are stateless, so nothing can be revoked; `logout` only clears cookies.
 - 🟡 No server-side validation that `scheduled_at` is in the future or inside the technician's availability. The frontend enforces both, in zod *and* again in the server action, but the API accepts anything.
 
 ---
@@ -292,4 +302,22 @@ NODE_ENV
 
 Because confirmation is asynchronous, the success page tells the user the booking may take a few seconds to show as paid. Any UI that gates on payment must check `payment.status === "completed"`, never merely that the user landed on the success page.
 
-**Both return pages are currently public and unverified** — anyone can open `/payment/success`. The `session_id` in the URL is effectively an unguessable token that could be matched against the user's own `GET /api/payments` (which returns `transaction_id`) to verify ownership, but that check is not implemented yet.
+### Return-page verification (added 2026-07-31)
+
+Both pages were previously public and unverified — anyone could open `/payment/success` and be told a payment succeeded. Now:
+
+1. `proxy.ts` guards `/payment/*`, so anonymous visitors get `307 → /auth/login?redirect=…`.
+2. `findOwnPaymentBySession` in `lib/payment-return.ts` resolves the `session_id` against the caller's **own** `GET /api/payments` (which returns `transaction_id`). No match → `notFound()`.
+3. `cancel_url` now carries `?session_id={CHECKOUT_SESSION_ID}` too, so both legs can be verified identically.
+
+**The check is existence + ownership, not `status === "completed"`.** Stripe confirms by webhook, so on arrival the row is usually still `pending`; gating on completion would 404 the legitimate customer in exactly the race the page warns about. The success page instead shows the webhook notice only while `status !== "completed"`.
+
+Verified access matrix:
+
+| Visitor | `session_id` | Result |
+|---|---|---|
+| anonymous | valid | `307` → login (redirect preserved) |
+| signed in | absent | `404` |
+| signed in | bogus | `404` |
+| signed in | **another user's** | `404`, no payment details in the response |
+| owner | own | `200`, real service / technician / amount |

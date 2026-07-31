@@ -14,8 +14,6 @@ const SiteHeader = async () => {
   return (
     <header className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
-        {/* Equal-basis side groups centre the nav — only from md, where that nav exists.
-            Below md they size to content instead, or the halves overflow the row. */}
         <div className="flex min-w-0 items-center gap-1 sm:gap-2 md:flex-1">
           <MobileNav links={PUBLIC_LINKS} isAuthenticated={Boolean(user)} />
 

@@ -99,8 +99,6 @@ const StatsBand = async () => {
   );
 };
 
-// Mirrors CategoryGrid's shape exactly — a service-card skeleton here collapses
-// to rows less than half its height, which reads as a jump on a single-column phone.
 const CategoriesSkeleton = ({ count = 6 }: { count?: number }) => (
   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
     {Array.from({ length: count }, (_, index) => (
@@ -130,9 +128,6 @@ const CategoryGrid = async () => {
   }
 
   return (
-    // grid-cols-1 is load-bearing: without it the implicit `auto` track takes its
-    // base size from min-content, and `truncate`'s nowrap makes that the whole
-    // sentence — blowing the track past the container. minmax(0,1fr) clamps it.
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {categories.slice(0, 6).map((category) => {
         const { icon: Icon, tint } = visualForCategory(category.name);

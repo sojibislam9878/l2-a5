@@ -83,7 +83,7 @@ const JobActions = ({
         return;
       }
 
-      toast.success(`${label} — job updated.`);
+      toast.success(`${label}: job updated.`);
     });
   };
 

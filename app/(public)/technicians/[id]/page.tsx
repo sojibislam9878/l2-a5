@@ -449,7 +449,7 @@ const TechnicianDetailPage = async ({
               )}
             </div>
             <p className="border-t pt-3 text-xs text-muted-foreground">
-              Book through a service below — payment is only requested after the
+              Book through a service below. Payment is only requested after the
               technician accepts.
             </p>
           </div>

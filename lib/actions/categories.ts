@@ -30,8 +30,6 @@ const guard = async () => {
 
 const friendly = (error: unknown) => {
   if (error instanceof ApiError) {
-    // The delete guard also returns 409, but with its own explanatory message,
-    // so only rewrite the bare duplicate-name case from Prisma P2002.
     return error.status === 409 &&
       error.message.startsWith("Duplicate value")
       ? "A category with that name already exists."

@@ -15,8 +15,6 @@ const RouteProgress = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Arriving somewhere new means the navigation finished, whatever the reporters
-  // managed to tell us — this keeps a stuck bar from outliving the transition.
   useEffect(() => {
     routeProgress.reset();
   }, [pathname, searchParams]);
@@ -35,7 +33,6 @@ const RouteProgress = () => {
         <div className="route-progress-bar h-full w-2/5 bg-brand" />
       </div>
 
-      {/* Clears the h-16 sticky header (64px) with a little breathing room. */}
       <div className="mt-19 flex justify-center px-4">
         <span className="route-progress-pill flex items-center gap-2 rounded-full border bg-card/95 py-1.5 pr-3.5 pl-2.5 text-xs font-medium shadow-lg shadow-black/5 backdrop-blur dark:shadow-black/40">
           <Loader2 className="size-3.5 animate-spin text-brand" />

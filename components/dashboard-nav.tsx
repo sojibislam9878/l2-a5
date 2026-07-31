@@ -18,8 +18,6 @@ import type { Role } from "@/lib/types";
 
 type NavItem = { href: string; label: string; icon: LucideIcon; exact?: boolean };
 
-// Profile lives at the root of each role's namespace, so its href is
-// role-dependent and must match exactly (or it highlights on every sub-route).
 const accountItems = (role: Role): NavItem[] => [
   { href: `/dashboard/${role}`, label: "Profile", icon: UserRound, exact: true },
 ];

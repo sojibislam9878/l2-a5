@@ -22,7 +22,7 @@ const DashboardError = ({
       icon={CircleAlert}
       tone="destructive"
       title="Couldn't load this page"
-      description="Something went wrong loading your dashboard. Your data is safe — try again."
+      description="Something went wrong loading your dashboard. Your data is safe, so try again."
     >
       <Button
         onClick={reset}

@@ -237,7 +237,7 @@ const JobsPage = async () => {
                       ? "The customer is waiting for you to accept or decline this request."
                       : job.status === "cancel"
                         ? "The customer withdrew this request before you accepted it. No action is needed."
-                        : "Accepted — waiting for the customer to pay before the job starts."}
+                        : "Accepted. Waiting for the customer to pay before the job starts."}
                   </p>
                 )}
 
